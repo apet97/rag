@@ -1,0 +1,78 @@
+== requirements.txt ==
+# ============================================================================
+# CLOCKIFY RAG REQUIREMENTS
+# ============================================================================
+# Python: 3.11-3.13 recommended (3.12 preferred for best stability)
+#         Avoid 3.14+ which has build issues with some packages
+# ============================================================================
+
+# ============================================================================
+# WEB SCRAPING & HTTP
+# ============================================================================
+httpx>=0.27.0          # Async HTTP client (flexible versioning for compatibility)
+urllib3>=2.0.0         # URL parsing and HTTP utilities
+
+# ============================================================================
+# CONTENT EXTRACTION & PARSING
+# ============================================================================
+trafilatura>=1.6.0     # Extract article text from HTML
+beautifulsoup4>=4.12.0 # HTML/XML parsing
+readability-lxml>=0.8.1 # Extract main content from web pages
+lxml>=5.0.0            # XML/HTML processing (binary wheels for fast install)
+markdown>=3.5.0        # Parse markdown files
+
+# ============================================================================
+# API FRAMEWORK & ASYNC
+# ============================================================================
+fastapi>=0.115.0       # Modern async web framework
+uvicorn[standard]>=0.30.0  # ASGI server with all standard extensions
+orjson>=3.10.0         # Fast JSON serialization
+pydantic>=2.9.0        # Data validation (V2+ required for FastAPI 0.115+)
+
+# ============================================================================
+# VECTOR SEARCH & EMBEDDINGS (CPU-only for CI compatibility)
+# ============================================================================
+# NOTE: GitHub Actions CI uses CPU-only wheels to avoid 4.29 GB CUDA downloads.
+# For local GPU development, use: pip install .[gpu]
+# CI installs with: pip install .[cpu] --extra-index-url https://download.pytorch.org/whl/cpu
+sentence-transformers>=2.6.0  # E5 and other embedding models (CRITICAL: required by src/embeddings.py)
+einops>=0.7.0                 # Einstein operations (required by nomic-ai models)
+faiss-cpu>=1.8.0              # Facebook AI Similarity Search (CPU version, pinned for stability)
+numpy>=2.1.0                  # Numerical computing (required by FAISS)
+
+# ============================================================================
+# FULL-TEXT SEARCH
+# ============================================================================
+rank-bm25>=0.2.2       # BM25 ranking algorithm for hybrid search
+whoosh>=2.7.4          # Pure-Python full-text search engine (fallback)
+
+# ============================================================================
+# LOGGING & CONFIG
+# ============================================================================
+python-dotenv>=1.0.0   # Load environment variables from .env
+loguru>=0.7.0          # Structured logging with color support
+pyyaml>=6.0.0          # YAML parsing and dumping
+prometheus-client>=0.20.0  # Prometheus metrics collection and export
+
+# ============================================================================
+# UTILITIES & PERFORMANCE
+# ============================================================================
+tqdm>=4.66.0           # Progress bars for long-running tasks
+
+# ============================================================================
+# OPTIONAL: RERANKING (Advanced, requires FlagEmbedding)
+# ============================================================================
+# Cross-encoder based reranking (BAAI bge-reranker). Install to enable AXIOM 5.
+FlagEmbedding>=1.1.0
+
+# ============================================================================
+# OPTIONAL: LLM QUERY GENERATION (Advanced, requires HyDE/LangChain)
+# ============================================================================
+# Uncomment for Hypothetical Document Embeddings
+# langchain>=0.1.0
+
+# ============================================================================
+# TESTING
+# ============================================================================
+pytest>=7.4.0          # Testing framework
+pytest-asyncio>=0.21.0 # Async test support

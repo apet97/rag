@@ -1,0 +1,6 @@
+{
+  "requests_calls_total": 406,
+  "requests_calls_missing_timeout": 367,
+  "has_vpn_flag": false,
+  "has_healthcheck": true
+}

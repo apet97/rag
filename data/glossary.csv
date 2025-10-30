@@ -1,0 +1,48 @@
+term,aliases,type,notes
+Timesheet,time sheet|timetrack,core,Weekly or daily record of work hours
+Billable Rate,billing rate|hourly rate|budget,core,Rate charged to clients for work performed; often used for budget management
+Cost Rate,cost per hour|labor cost,core,Internal cost of employee labor
+Workspace,work space|team,core,Dedicated space for team collaboration
+Project,task|assignment,core,Collection of related work tasks
+PTO,paid time off|vacation|sick leave,core,Paid absence from work
+SSO,single sign-on|single sign on|SAML,feature,Authentication using centralized identity provider or SAML-based identity provider
+Approval,approval workflow|approve|approvals,feature,Manager review and sign-off on timesheets
+Rounding,time rounding|round time,feature,Automatic rounding of time entries to nearest interval
+Invoice,invoicing|billing,feature,Document sent to client for payment
+Expense,expenses|spending,feature,Non-labor costs associated with projects
+Client,customer|account,core,External party receiving services
+Tracking,time tracking|track work,core,Recording work hours against projects
+Report,reporting|analytics,feature,Summary of time and cost data
+Integration,integrations|API|webhook|webhooks|event|events,feature,Connection to external tools and systems; webhooks enable event-driven integrations
+API Token,api token|API key|token|access token,feature,Authentication credential for API access to Clockify services
+Team,team members|employees,core,Group of workers in workspace
+Manager,supervisor|lead,role,Person responsible for approvals and oversight
+Admin,administrator,role,User with full system access
+Member,team member|participant,role,Regular user in workspace
+Day Off,day-off|off-day,core,Scheduled absence or holiday
+Running Total,running time|cumulative,metric,Sum of hours across period
+Manual Entry,manual time|add time,feature,Direct input of hours without tracking
+Timer,time timer|stopwatch|kiosk|kiosk mode,feature,Real-time clock for active tracking; kiosk mode is a shared-device interface
+Overtime,over time|extra hours,metric,Hours worked beyond standard schedule
+Breakpoint,break time|break,feature,Scheduled pause in work day
+Week View,weekly view|week,ui,Display of hours grouped by calendar week
+Timeline,work timeline|schedule,ui,Visual representation of work over time
+Tag,tags|label,feature,Category or marker for time entries
+Custom Field,custom field|field,feature,User-defined data attribute
+Permission,permissions|access,feature,Authorization level for system actions
+Audit Trail,audit log|history,feature,Record of all system changes
+Time Entry,entry|time log,core,Single record of work hours
+Activity,activities|tasks,core,Specific work performed during time period
+Category,categories|type,feature,Classification of work or expense
+Status,state|workflow status,feature,Current state of timesheet or task
+Lock,locked|freeze,feature,Prevent further edits to time entries
+Revision,version|revision history,feature,Previous versions of timesheet
+Duplicate,copy|clone,feature,Create copy of existing entry
+Filter,filters|search,ui,Narrow results to subset
+Export,exporting|download,feature,Save data in external format
+Archive,archived|deactivate,feature,Mark as inactive
+Notification,notifications|alert,feature,System message to user
+Reminder,reminders|alert,feature,Automated prompt about due action
+Dashboard,dashboard view|home,ui,Main overview screen
+Settings,preferences|configuration,ui,User customizable options
+Profile,user profile|account,ui,Personal information page

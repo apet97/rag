@@ -1,0 +1,88 @@
+version: '3.8'
+
+services:
+  # RAG API Server
+  rag:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: rag-system
+    restart: unless-stopped
+    ports:
+      - "7000:7000"
+    environment:
+      # Required - Change this in production!
+      API_TOKEN: ${API_TOKEN:-change-me}
+
+      # Server Configuration
+      API_HOST: 0.0.0.0
+      API_PORT: 7000
+      ENV: ${ENV:-dev}
+
+      # Ollama Configuration
+      LLM_BASE_URL: http://ollama:11434
+      EMBEDDING_MODEL: intfloat/multilingual-e5-base
+      LLM_MODEL: gpt-oss:20b
+      TRANSFORMERS_CACHE: /app/.cache/huggingface
+
+      # Cache Configuration
+      RESPONSE_CACHE_SIZE: 1000
+      RESPONSE_CACHE_TTL: 3600
+
+      # Rate Limiting
+      RATE_LIMIT_RPS: 10
+
+      # Logging
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+      LOG_FILE: /app/logs/rag.log
+
+    volumes:
+      - ./logs:/app/logs
+      - ./data:/app/data
+      - ./models:/app/.cache/huggingface
+
+    networks:
+      - rag-network
+
+    depends_on:
+      ollama:
+        condition: service_healthy
+
+    healthcheck:
+      test: ["CMD", "curl", "-f", "-H", "x-api-token: ${API_TOKEN:-change-me}", "http://localhost:7000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+
+  # Ollama - Local LLM Server
+  ollama:
+    image: ollama/ollama:latest
+    container_name: rag-ollama
+    restart: unless-stopped
+    ports:
+      - "11434:11434"
+
+    environment:
+      OLLAMA_HOST: 0.0.0.0:11434
+
+    volumes:
+      - ollama_data:/root/.ollama
+
+    networks:
+      - rag-network
+
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:11434/api/tags"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+
+volumes:
+  ollama_data:
+    driver: local
+
+networks:
+  rag-network:
+    driver: bridge

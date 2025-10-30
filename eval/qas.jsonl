@@ -1,0 +1,15 @@
+{"q": "How do I submit my weekly timesheet?", "must": ["https://help.clockify.me/article/timesheet"]}
+{"q": "What is time off or PTO?", "must": ["https://help.clockify.me/article/pto"]}
+{"q": "How do I set up the kiosk?", "must": ["https://help.clockify.me/article/kiosk"]}
+{"q": "What is a billable rate?", "must": ["https://help.clockify.me/article/billable-rate"]}
+{"q": "How do I create a project?", "must": ["https://help.clockify.me/article/project"]}
+{"q": "What is SSO?", "must": ["https://help.clockify.me/article/sso"]}
+{"q": "How do I approve timesheets as a manager?", "must": ["https://help.clockify.me/article/approval"]}
+{"q": "Can I export reports?", "must": ["https://help.clockify.me/article/reports"]}
+{"q": "What are user roles?", "must": ["https://help.clockify.me/article/roles"]}
+{"q": "How do I track time?", "must": ["https://help.clockify.me/article/tracking"]}
+{"q": "What is project budget?", "must": ["https://help.clockify.me/article/budget"]}
+{"q": "How do I enable time rounding?", "must": ["https://help.clockify.me/article/rounding"]}
+{"q": "What are recurring time entries?", "must": ["https://help.clockify.me/article/recurring"]}
+{"q": "How do I use estimates?", "must": ["https://help.clockify.me/article/estimates"]}
+{"q": "What is the audit log?", "must": ["https://help.clockify.me/article/audit"]}

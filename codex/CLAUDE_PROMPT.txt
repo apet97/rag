@@ -1,0 +1,252 @@
+You are Claude, assisting with a surgical patch to a Python RAG repository. Do exactly the following:
+
+1) Apply the unified patch below to the repo root. Keep changes minimal and confined to the files shown. Do not reformat unrelated code.
+2) Ensure:
+   - Embedding dimension is a single source of truth across async/sync embedding code.
+   - Index reconstruction failures degrade gracefully without crashing startup.
+   - Ingestion script uses Ollama /api/embeddings and writes meta.json compatible with IndexManager/embed.py.
+   - Startup skips missing/invalid namespaces with clear warnings and proceeds with valid ones.
+3) After patching, run:
+   - python3 codex/scripts/dims_check.py (or create equivalent) to verify index dims.
+   - If server is available, start `uvicorn src.server:app` and hit `/health`.
+4) Output a concise summary of what changed and any follow-ups.
+
+PATCH (unified diff, apply at repo root):
+
+```diff
+diff --git a/src/embeddings_async.py b/src/embeddings_async.py
+index 333e7a19..51b6779e 100644
+--- a/src/embeddings_async.py
++++ b/src/embeddings_async.py
+@@ -23,7 +23,12 @@ from loguru import logger
+ 
+ OLLAMA_BASE_URL = os.getenv("LLM_BASE_URL", "http://10.127.0.192:11434")
+ EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "nomic-embed-text:latest")
+-EMBEDDING_DIM = int(os.getenv("EMBEDDING_DIM", "768"))
++# Single source of truth for embedding dimension (import from sync embeddings module)
++try:
++    from src.embeddings import EMBEDDING_DIM  # type: ignore
++except Exception:
++    # Fallback to env if import path not available in certain tools
++    EMBEDDING_DIM = int(os.getenv("EMBEDDING_DIM", "768"))
+ BATCH_SIZE = int(os.getenv("EMBEDDING_BATCH_SIZE", "32"))
+ 
+ logger.info(
+diff --git a/src/index_manager.py b/src/index_manager.py
+index 0a0e4f35..4fc88fa9 100644
+--- a/src/index_manager.py
++++ b/src/index_manager.py
+@@ -133,13 +133,18 @@ class IndexManager:
+         metas = json.loads(meta_path.read_text())
+         rows = metas.get("rows") or metas.get("chunks", [])
+ 
+-        # PERFORMANCE FIX: Reconstruct all vectors at startup and cache them
+-        # This eliminates O(N·dim) per-request overhead
+-        # For Clockify (1K chunks × 768 dim) this saves ~700K float loads per query
+-        logger.info(f"Reconstructing {len(rows)} vectors for namespace '{ns}'...")
++        # PERFORMANCE: Attempt to reconstruct all vectors at startup and cache them.
++        # If reconstruction is not supported by the index type, degrade gracefully:
++        # keep metas without embeddings and rely on FAISS-only vector search paths.
++        logger.info(f"Reconstructing {len(rows)} vectors for namespace '{ns}' (if supported)...")
++
+         chunks_with_embeddings = []
++        reconstruction_supported = True
+ 
+         for i, chunk in enumerate(rows):
++            if not reconstruction_supported:
++                # Skip attempts once we know it's unsupported
++                break
+             try:
+                 # Reconstruct vector from FAISS at position i
+                 vector = index.reconstruct(i)
+@@ -147,20 +152,24 @@ class IndexManager:
+                 chunk_with_emb = {**chunk, "embedding": vector}
+                 chunks_with_embeddings.append(chunk_with_emb)
+             except Exception as e:
+-                # Fail fast if index doesn't support reconstruction
+-                logger.error(f"Failed to reconstruct vector {i} in namespace '{ns}': {e}")
+-                logger.error(f"Index type: {type(index).__name__} - may not support reconstruction")
+-                raise RuntimeError(
+-                    f"Cannot reconstruct vectors from FAISS index for namespace '{ns}'. "
+-                    f"Index type '{type(index).__name__}' may not support reconstruction. "
+-                    f"Hybrid search requires reconstructible indexes (Flat, IVFFlat with make_direct_map)."
+-                ) from e
+-
+-        logger.info(f"✓ Cached {len(chunks_with_embeddings)} vectors for namespace '{ns}'")
++                # Degrade gracefully: stop reconstruction attempts, use raw metas only
++                reconstruction_supported = False
++                chunks_with_embeddings = []  # discard partial to avoid mixed states
++                logger.warning(
++                    "FAISS reconstruct() not supported for index type '%s' in namespace '%s': %s. "
++                    "Proceeding without cached embeddings (hybrid search may fall back to vector-only).",
++                    type(index).__name__, ns, e
++                )
++
++        if reconstruction_supported:
++            logger.info(f"✓ Cached {len(chunks_with_embeddings)} vectors for namespace '{ns}'")
++            metas_out = chunks_with_embeddings
++        else:
++            metas_out = rows  # No 'embedding' key; safe for JSON serialization
+ 
+         return {
+             "index": index,
+-            "metas": chunks_with_embeddings,  # Now includes embeddings
++            "metas": metas_out,
+             "dim": metas.get("dim") or metas.get("dimension", 768)
+         }
+ 
+diff --git a/src/ingest_from_jsonl.py b/src/ingest_from_jsonl.py
+index 9d8c1923..ac0caaa4 100644
+--- a/src/ingest_from_jsonl.py
++++ b/src/ingest_from_jsonl.py
+@@ -31,21 +31,22 @@ INDEX_DIR.mkdir(parents=True, exist_ok=True)
+ 
+ 
+ def get_embedding(text: str) -> Optional[np.ndarray]:
+-    """Get embedding from Ollama."""
++    """Get embedding from Ollama-compatible /api/embeddings."""
+     import httpx
+ 
+     try:
+         client = httpx.Client(timeout=60.0)
+         response = client.post(
+-            f"{LLM_BASE_URL}/api/embed",
++            f"{LLM_BASE_URL}/api/embeddings",
+             json={
+                 "model": EMBEDDING_MODEL,
+-                "input": text,
++                "prompt": text.strip(),
+             },
+         )
+         response.raise_for_status()
+         data = response.json()
+-        embedding = np.array(data["embeddings"][0], dtype=np.float32)
++        # Ollama embeddings returns a single vector under key 'embedding'
++        embedding = np.array(data.get("embedding"), dtype=np.float32)
+         # L2 normalize
+         norm = np.linalg.norm(embedding)
+         if norm > 0:
+@@ -142,10 +143,38 @@ def build_index(records: List[Dict]) -> Dict:
+     faiss.write_index(index, str(index_path))
+     logger.info(f"✓ Index saved: {index_path}")
+ 
+-    # Save metadata
++    # Save metadata with schema compatible with IndexManager/embed.py
++    def _meta_entry(rec: Dict) -> Dict:
++        return {
++            "id": rec.get("id") or rec.get("_hash"),
++            "chunk_id": rec.get("chunk_id") or rec.get("id") or rec.get("_hash"),
++            "parent_id": rec.get("parent_id"),
++            "url": rec.get("url"),
++            "title": rec.get("title"),
++            "headers": rec.get("headers"),
++            "tokens": rec.get("tokens"),
++            "node_type": rec.get("node_type", "child"),
++            "text": rec.get("content") or rec.get("text", ""),
++            "section": rec.get("section"),
++            "anchor": rec.get("anchor"),
++            "breadcrumb": rec.get("breadcrumb"),
++            "updated_at": rec.get("updated_at"),
++            "title_path": rec.get("title_path"),
++        }
++
++    metadata_payload = {
++        "model": EMBEDDING_MODEL,
++        "dimension": dimension,
++        "dim": dimension,
++        "num_vectors": index.ntotal,
++        "normalized": True,
++        "chunks": [_meta_entry(r) for r in metadata_list],
++        "rows": [_meta_entry(r) for r in metadata_list],
++    }
++
+     metadata_path = INDEX_DIR / "meta.json"
+     with open(metadata_path, "w", encoding="utf-8") as f:
+-        json.dump(metadata_list, f, indent=2, ensure_ascii=False)
++        json.dump(metadata_payload, f, indent=2, ensure_ascii=False)
+     logger.info(f"✓ Metadata saved: {metadata_path}")
+ 
+     # Save stats
+diff --git a/src/server.py b/src/server.py
+index 4d0e7615..2236a749 100644
+--- a/src/server.py
++++ b/src/server.py
+@@ -118,7 +118,8 @@ async def _startup() -> None:
+         raise RuntimeError("Invalid production config: API_TOKEN not configured")
+ 
+     # PREBUILT INDEX VALIDATION: Ensure index files exist and metadata is valid
+-    logger.info(f"Validating prebuilt index for namespaces: {NAMESPACES}")
++    logger.info(f"Validating prebuilt index for namespaces (env): {NAMESPACES}")
++    valid_namespaces: List[str] = []
+     for ns in NAMESPACES:
+         root = INDEX_ROOT / ns
+         idx_path_faiss = root / "index.faiss"
+@@ -127,19 +128,18 @@ async def _startup() -> None:
+ 
+         # Check index file exists
+         if not idx_path_faiss.exists() and not idx_path_bin.exists():
+-            raise RuntimeError(
+-                f"\n❌ STARTUP FAILURE: Missing prebuilt index for namespace '{ns}'\n"
+-                f"   Expected: {idx_path_faiss} or {idx_path_bin}\n"
+-                f"   Fix: Run 'make ingest' to build the FAISS index before deployment"
++            logger.warning(
++                f"Skipping namespace '{ns}': missing prebuilt index at {root}. "
++                f"Expected: {idx_path_faiss} or {idx_path_bin}"
+             )
++            continue
+ 
+         # Check metadata exists
+         if not meta_path.exists():
+-            raise RuntimeError(
+-                f"\n❌ STARTUP FAILURE: Missing metadata for namespace '{ns}'\n"
+-                f"   Expected: {meta_path}\n"
+-                f"   Fix: Run 'make ingest' to build the FAISS index before deployment"
++            logger.warning(
++                f"Skipping namespace '{ns}': missing metadata at {meta_path}"
+             )
++            continue
+ 
+         # Validate metadata format and model/dimension
+         try:
+@@ -153,11 +153,18 @@ async def _startup() -> None:
+                 raise ValueError(f"Invalid embedding dimension in metadata: {meta_dim}")
+ 
+         except (json.JSONDecodeError, ValueError) as e:
+-            raise RuntimeError(
+-                f"\n❌ STARTUP FAILURE: Invalid metadata for namespace '{ns}': {e}\n"
+-                f"   File: {meta_path}\n"
+-                f"   Fix: Ensure meta.json is valid JSON with 'dim' field"
++            logger.warning(
++                f"Skipping namespace '{ns}': invalid metadata at {meta_path}: {e}"
+             )
++            continue
++
++        valid_namespaces.append(ns)
++
++    if not valid_namespaces:
++        raise RuntimeError(
++            f"\n❌ STARTUP FAILURE: No valid namespaces found under {INDEX_ROOT}. "
++            "Build indexes or adjust NAMESPACES."
++        )
+ 
+     # Validate embedding dimension against local encoder
+     try:
+@@ -165,7 +172,7 @@ async def _startup() -> None:
+         encoder_dim = probe.shape[1]
+         logger.info(f"✓ Embedding encoder ready: {EMBEDDING_MODEL} (dim={encoder_dim})")
+ 
+-        for ns in NAMESPACES:
++        for ns in valid_namespaces:
+             meta_data = json.loads((INDEX_ROOT / ns / "meta.json").read_text())
+             meta_dim = meta_data.get("dim") or meta_data.get("dimension", 768)
+             if meta_dim != encoder_dim:
+@@ -187,7 +194,7 @@ async def _startup() -> None:
+     # PHASE 2 REFACTOR: Initialize IndexManager for thread-safe index loading
+     logger.info("Initializing FAISS index manager...")
+     global index_manager
+-    index_manager = IndexManager(INDEX_ROOT, NAMESPACES)
++    index_manager = IndexManager(INDEX_ROOT, valid_namespaces)
+     index_manager.ensure_loaded()
+ 
+     # Log vector counts per namespace for observability
+```

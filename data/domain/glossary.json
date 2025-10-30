@@ -1,0 +1,377 @@
+{
+  "timesheet": [
+    "weekly report",
+    "timesheet view",
+    "time entry",
+    "hours submitted",
+    "time card"
+  ],
+  "time off": [
+    "pto",
+    "vacation",
+    "holiday entry",
+    "leave",
+    "absence",
+    "sick day",
+    "time-off request",
+    "accrued"
+  ],
+  "kiosk": [
+    "time clock",
+    "pin code",
+    "attendance",
+    "punch in",
+    "punch out",
+    "employee kiosk",
+    "universal pin"
+  ],
+  "project manager": [
+    "manager role",
+    "team manager",
+    "project lead",
+    "project owner"
+  ],
+  "billable rate": [
+    "hourly rate",
+    "workspace rate",
+    "member rate",
+    "project rate",
+    "task rate",
+    "billing rate",
+    "labor cost"
+  ],
+  "estimate": [
+    "time estimate",
+    "budget estimate",
+    "task-based estimate",
+    "estimated hours",
+    "forecast"
+  ],
+  "sso": [
+    "single sign-on",
+    "saml2",
+    "oauth2",
+    "authentication",
+    "login",
+    "active directory"
+  ],
+  "invoice": [
+    "billing",
+    "invoice creation",
+    "bill",
+    "client invoice",
+    "export invoice",
+    "payment"
+  ],
+  "scheduling": [
+    "assignments",
+    "forecasting",
+    "workload",
+    "schedule",
+    "team planning",
+    "gantt",
+    "capacity"
+  ],
+  "audit log": [
+    "activity log",
+    "who did what",
+    "event log",
+    "history",
+    "compliance",
+    "tracking"
+  ],
+  "reminders": [
+    "timer reminders",
+    "weekly reminders",
+    "notifications",
+    "alerts",
+    "email notification",
+    "timesheet reminder"
+  ],
+  "approval": [
+    "approve timesheet",
+    "manager approval",
+    "workflow",
+    "review",
+    "pending approval",
+    "approval workflow"
+  ],
+  "rounding": [
+    "time rounding",
+    "round to nearest",
+    "15 minute rounding",
+    "time precision"
+  ],
+  "rates": [
+    "billing rates",
+    "cost rates",
+    "hourly rates",
+    "member rates",
+    "project rates",
+    "labor rates"
+  ],
+  "quickbooks": [
+    "qb",
+    "quickbooks integration",
+    "accounting",
+    "bookkeeping",
+    "expense sync",
+    "payroll",
+    "qbo"
+  ],
+  "jira": [
+    "atlassian jira",
+    "jira integration",
+    "issue tracking",
+    "project management",
+    "jira sync"
+  ],
+  "slack": [
+    "slack integration",
+    "messaging",
+    "notifications",
+    "channel",
+    "slack bot",
+    "updates"
+  ],
+  "zapier": [
+    "zapier integration",
+    "automation",
+    "workflow automation",
+    "integrations",
+    "zap"
+  ],
+  "monday": [
+    "monday.com",
+    "monday integration",
+    "work os",
+    "project tracking"
+  ],
+  "asana": [
+    "asana integration",
+    "task management",
+    "team collaboration",
+    "asana sync"
+  ],
+  "microsoft teams": [
+    "teams integration",
+    "microsoft teams",
+    "channel notifications"
+  ],
+  "google workspace": [
+    "google calendar",
+    "google drive",
+    "google sheets",
+    "gsuite"
+  ],
+  "stripe": [
+    "stripe integration",
+    "payment",
+    "invoicing",
+    "billing"
+  ],
+  "api": [
+    "api endpoint",
+    "api key",
+    "rest api",
+    "webhook",
+    "integration api",
+    "clockify api"
+  ],
+  "webhook": [
+    "webhooks",
+    "event notifications",
+    "real-time updates",
+    "event listener"
+  ],
+  "oauth": [
+    "oauth2",
+    "oauth integration",
+    "third-party auth",
+    "authorization",
+    "token"
+  ],
+  "adp": [
+    "adp integration",
+    "payroll",
+    "hr system",
+    "employee records"
+  ],
+  "basecamp": [
+    "basecamp integration",
+    "project collaboration",
+    "team communication"
+  ],
+  "harvest": [
+    "harvest integration",
+    "invoicing",
+    "time tracking sync"
+  ],
+  "trello": [
+    "trello integration",
+    "kanban",
+    "card management"
+  ],
+  "hubspot": [
+    "hubspot integration",
+    "crm",
+    "sales",
+    "marketing"
+  ],
+  "pipedrive": [
+    "pipedrive integration",
+    "sales crm",
+    "deals",
+    "pipeline"
+  ],
+  "toggl": [
+    "toggl integration",
+    "time tracking",
+    "project management"
+  ],
+  "harvest time": [
+    "harvest",
+    "time tracking software",
+    "invoicing integration"
+  ],
+  "export": [
+    "export data",
+    "csv export",
+    "excel export",
+    "pdf export",
+    "data export"
+  ],
+  "import": [
+    "import data",
+    "bulk import",
+    "csv import",
+    "data migration"
+  ],
+  "customization": [
+    "custom fields",
+    "custom reports",
+    "branding",
+    "templates",
+    "custom integration"
+  ],
+  "workspace": [
+    "workspace settings",
+    "workspace admin",
+    "workspace members",
+    "team workspace",
+    "organization"
+  ],
+  "roles": [
+    "user roles",
+    "admin role",
+    "manager role",
+    "member role",
+    "permissions",
+    "access control"
+  ],
+  "permissions": [
+    "user permissions",
+    "role permissions",
+    "access permissions",
+    "permission level"
+  ],
+  "expenses": [
+    "expense tracking",
+    "expense report",
+    "receipt",
+    "expense category",
+    "mileage"
+  ],
+  "reports": [
+    "reporting",
+    "analytics",
+    "insights",
+    "summary report",
+    "detailed report",
+    "export report"
+  ],
+  "dashboard": [
+    "overview dashboard",
+    "project dashboard",
+    "team dashboard",
+    "analytics dashboard"
+  ],
+  "tags": [
+    "project tags",
+    "task tags",
+    "time entry tags",
+    "tag filtering"
+  ],
+  "task": [
+    "task tracking",
+    "task assignment",
+    "task scheduling",
+    "task estimate"
+  ],
+  "project": [
+    "project creation",
+    "project settings",
+    "project members",
+    "project budget",
+    "project timeline"
+  ],
+  "team": [
+    "team management",
+    "team members",
+    "team settings",
+    "team roles",
+    "team collaboration"
+  ],
+  "client": [
+    "client management",
+    "client project",
+    "client access",
+    "client dashboard"
+  ],
+  "contract": [
+    "contract type",
+    "fixed contract",
+    "hourly contract",
+    "ongoing contract"
+  ],
+  "retainer": [
+    "retainer project",
+    "retainer model",
+    "fixed fee",
+    "recurring project"
+  ],
+  "budget": [
+    "project budget",
+    "budget tracking",
+    "budget alert",
+    "budget overage"
+  ],
+  "timer": [
+    "start timer",
+    "stop timer",
+    "pause timer",
+    "timer accuracy",
+    "timer sync",
+    "desktop timer"
+  ],
+  "mobile app": [
+    "mobile tracking",
+    "mobile timer",
+    "phone app",
+    "ios app",
+    "android app"
+  ],
+  "desktop app": [
+    "desktop timer",
+    "windows app",
+    "mac app",
+    "linux app",
+    "background timer"
+  ],
+  "browser extension": [
+    "chrome extension",
+    "browser extension",
+    "tracking extension",
+    "web timer"
+  ]
+}

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clockify RAG - Chat</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h1 class="app-title">🔍 Clockify</h1>
+                <p class="app-subtitle">RAG Assistant</p>
+            </div>
+
+            <button id="newChatBtn" class="new-chat-btn">
+                <span class="icon">+</span>
+                New Chat
+            </button>
+
+            <div class="sidebar-divider"></div>
+
+            <div class="sidebar-section">
+                <h3 class="sidebar-section-title">Settings</h3>
+                <button id="settingsBtn" class="sidebar-btn" title="Settings">
+                    <span class="icon">⚙️</span>
+                    Settings
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Chat Area -->
+        <main class="main-content">
+            <!-- Chat Header -->
+            <header class="chat-header">
+                <div class="header-content">
+                    <h2 id="chatTitle">Clockify RAG Assistant</h2>
+                    <p id="chatSubtitle" class="header-subtitle">Ask me anything about Clockify Help</p>
+                </div>
+                <button id="infoBtn" class="header-btn" title="Info">ℹ️</button>
+            </header>
+
+            <!-- Chat Messages Area -->
+            <div class="chat-main">
+                <div class="messages-container" id="messagesContainer">
+                    <!-- Messages will be inserted here -->
+                </div>
+
+                <!-- Empty State -->
+                <div id="emptyState" class="empty-state">
+                    <div class="empty-state-icon">💬</div>
+                    <h2>Start a conversation</h2>
+                    <p>Ask me any question about Clockify Help. I'll search our knowledge base and provide you with accurate answers.</p>
+                    <div class="empty-state-tips">
+                        <p><strong>💡 Tips:</strong></p>
+                        <ul>
+                            <li>Be specific: "How do I track time?" works better than "time"</li>
+                            <li>Use natural language - questions work best</li>
+                            <li>Check the sources to verify answers</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat Input Area -->
+            <div class="chat-input-section">
+                <div class="input-area">
+                    <textarea
+                        id="chatInput"
+                        class="chat-input"
+                        placeholder="Ask a question about Clockify..."
+                        rows="1"
+                    ></textarea>
+                    <button id="sendBtn" class="send-btn" title="Send (Shift+Enter)">
+                        <span class="icon">➤</span>
+                    </button>
+                </div>
+                <div class="input-hint">Press Shift+Enter for new line, Enter to send</div>
+            </div>
+        </main>
+
+        <!-- Sources Side Panel (Hidden by default) -->
+        <aside id="sourcePanel" class="source-panel" style="display: none;">
+            <div class="source-header">
+                <h3>📚 Sources</h3>
+                <button id="closeSourceBtn" class="close-btn" title="Close">✕</button>
+            </div>
+            <div id="sourcesList" class="sources-list"></div>
+        </aside>
+    </div>
+
+    <!-- Settings Modal (Hidden by default) -->
+    <div id="settingsModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Settings</h2>
+                <button id="closeSettingsBtn" class="close-btn" title="Close">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="setting-group">
+                    <label class="setting-label">
+                        <input type="checkbox" id="autoScroll" checked>
+                        Auto-scroll to latest message
+                    </label>
+                </div>
+                <div class="setting-group">
+                    <label class="setting-label">
+                        <input type="checkbox" id="darkMode" id="darkModeToggle">
+                        Dark mode
+                    </label>
+                </div>
+                <div class="setting-group">
+                    <label class="setting-label">
+                        <input type="checkbox" id="showSources" checked>
+                        Show sources panel
+                    </label>
+                </div>
+                <div class="setting-group">
+                    <label class="setting-label">
+                        Max results per query:
+                        <input type="number" id="maxResults" min="1" max="20" value="5">
+                    </label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="closeSettingsBtn2" class="btn btn-secondary">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Info Modal (Hidden by default) -->
+    <div id="infoModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>About Clockify RAG</h2>
+                <button id="closeInfoBtn" class="close-btn" title="Close">✕</button>
+            </div>
+            <div class="modal-body">
+                <h3>What is this?</h3>
+                <p>This is a retrieval-augmented generation (RAG) system that combines semantic search with AI to answer your questions about Clockify Help.</p>
+
+                <h3>How it works:</h3>
+                <ol>
+                    <li><strong>Analysis</strong> - Your question is analyzed for intent</li>
+                    <li><strong>Search</strong> - We search our knowledge base using semantic and keyword methods</li>
+                    <li><strong>Synthesis</strong> - AI generates an answer from the best results</li>
+                    <li><strong>Citation</strong> - Sources are cited so you can verify the answer</li>
+                </ol>
+
+                <h3>Features:</h3>
+                <ul>
+                    <li>💬 Smart conversational AI</li>
+                    <li>📚 Source citations for verification</li>
+                    <li>🎯 Hybrid semantic + keyword search</li>
+                    <li>⚡ Fast and accurate responses</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/api.js"></script>
+    <script src="js/chat-qwen.js"></script>
+    <script src="js/main-qwen.js"></script>
+</body>
+</html>

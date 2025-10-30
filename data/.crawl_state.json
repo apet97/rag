@@ -1,0 +1,728 @@
+{
+  "https://clockify.me/help/": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "5135a058edba2c90f0649416bcbc9c79f926d973c2ae3c1723f6e594177d4f02",
+    "fetched_at": "2025-10-20T16:01:20.541286"
+  },
+  "https://clockify.me/help": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "5135a058edba2c90f0649416bcbc9c79f926d973c2ae3c1723f6e594177d4f02",
+    "fetched_at": "2025-10-20T16:01:21.819340"
+  },
+  "https://clockify.me/help/administration": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "88323900b97af5f69182acd21ef1e1df06dfc008275df6fc23244c0aecdfdcc9",
+    "fetched_at": "2025-10-20T16:01:22.039778"
+  },
+  "https://clockify.me/help/integrations": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "060fb3e2e969aa030f42f05ed036c514ee27f3aa0c996c5aa19ddc5630749b6a",
+    "fetched_at": "2025-10-20T16:01:22.063157"
+  },
+  "https://clockify.me/help/projects": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "5b80098be52d1e57f66c07e896fcb01735dcec2b43639fd75bfd44509a9c994c",
+    "fetched_at": "2025-10-20T16:01:22.087407"
+  },
+  "https://clockify.me/help/contact": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "ab8f07e7af8cd19c7da74a284de63884c3d90526c60ef6b0bf817001c9e81cc5",
+    "fetched_at": "2025-10-20T16:01:22.888094"
+  },
+  "https://clockify.me/help/getting-started": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "7d5ee19a7e1b955be50e079b1a4503ed5fd42689d9a13cc9b9b0f933ca26a788",
+    "fetched_at": "2025-10-20T16:01:22.923112"
+  },
+  "https://clockify.me/help/track-time-and-expenses/auto-tracker": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "5097dc289a2497900a3bec665a02b163542c3cb67b20d4e1363159461be7e1e7",
+    "fetched_at": "2025-10-20T16:01:22.950376"
+  },
+  "https://clockify.me/help/contact/sales ": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "1217536aedeaa4e09956e51be77d58ec3b39d211a891151363fafcbc84cdb8cd",
+    "fetched_at": "2025-10-20T16:01:23.085558"
+  },
+  "https://clockify.me/help/track-time-and-expenses/custom-fields": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "86ab40a358a80c6478b58d3b63be66a9d85bd73aae9847e0650fb84bd7df205a",
+    "fetched_at": "2025-10-20T16:01:23.837000"
+  },
+  "https://clockify.me/help/contact ": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "ab8f07e7af8cd19c7da74a284de63884c3d90526c60ef6b0bf817001c9e81cc5",
+    "fetched_at": "2025-10-20T16:01:23.885408"
+  },
+  "https://clockify.me/help/projects/scheduling": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "105ed992d0556414b6bb19a8ba0f54630963beb5472f9bfe13abd1345b0f6c6b",
+    "fetched_at": "2025-10-27T18:20:58.711649"
+  },
+  "https://clockify.me/help/reports/hourly-rates": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "29ab030e8b154dd9f92858e406f389a71a71090bcebd9be1ab94888798a82fff",
+    "fetched_at": "2025-10-20T16:01:24.010659"
+  },
+  "https://clockify.me/help/reports": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "44ffc1f85d60729f0cbb388ad660fed1a25fced9ed085d0db4d017f9f17e978b",
+    "fetched_at": "2025-10-20T16:01:24.899157"
+  },
+  "https://clockify.me/help/administration/user-roles-and-permissions/who-can-do-what": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "82a78e7efb6806fa2eba9390c004baebb2fefbf2f03359c6e106c0c62196fed2",
+    "fetched_at": "2025-10-27T18:20:39.343345"
+  },
+  "https://clockify.me/help/troubleshooting": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "8c1eb37761e0bd758ed8eca4b5f1ecc65bb68557269adc2c917702c5fa253ea1",
+    "fetched_at": "2025-10-20T16:01:24.961319"
+  },
+  "https://clockify.me/help/track-time-and-expenses/create-manage-time-off-policy": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "a03d5e840a34582db8bafc2dee528f21e2eab0ced5cc197ee83b191df6295c69",
+    "fetched_at": "2025-10-20T16:01:24.986343"
+  },
+  "https://clockify.me/help/apps": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "eb48641dfd9311c2759b4be298e768caf5b93a3167a3a9b93faed0ef07b91371",
+    "fetched_at": "2025-10-20T16:01:25.923423"
+  },
+  "https://clockify.me/help/projects/import-clients-projects": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "ed1b2b4e42fcc5279756fbd285e098fb8ed361fca42cc282d66a854a74d44a7f",
+    "fetched_at": "2025-10-27T18:20:55.423153"
+  },
+  "https://clockify.me/help/track-time-and-expenses": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "ae7964ad3c46207eca597d60e6d5584104fef5dcce97ed3989ec9ed9249884bf",
+    "fetched_at": "2025-10-20T16:01:25.991445"
+  },
+  "https://clockify.me/help/whats-new": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "f1ef9a87778f0edd0e328bc9e4b60280727c7cc73fea03691ea5f0f9809e4242",
+    "fetched_at": "2025-10-20T16:01:26.029263"
+  },
+  "https://clockify.me/help/contact/sales": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "1217536aedeaa4e09956e51be77d58ec3b39d211a891151363fafcbc84cdb8cd",
+    "fetched_at": "2025-10-20T16:01:26.626004"
+  },
+  "https://clockify.me/help/administration/cancel-subscription-on-clockify": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "218ab3debcec25b6fe8bb4c9594471575e597002644acf3ecae5c1e3f48f13d9",
+    "fetched_at": "2025-10-27T18:20:34.496473"
+  },
+  "https://clockify.me/help/administration/user-roles-and-permissions/manager-role": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "4a88f43b515348c11e5ef12ea55839d1f7c71a0f3084226ff47cb9eedce347e9",
+    "fetched_at": "2025-10-27T18:20:39.378785"
+  },
+  "https://clockify.me/help/administration/manage-multiple-members-time-tracking-settings": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "10b4632081d5691799023d7ca6b1af579eaa2671d2e067c76490d09558c671f3",
+    "fetched_at": "2025-10-27T18:20:37.321283"
+  },
+  "https://clockify.me/help/administration/export-user-info": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "7a717ba45a6962b787241d3d5a05ea04eec3acff3f8ab8a0763a265e090979d6",
+    "fetched_at": "2025-10-27T18:20:35.607661"
+  },
+  "https://clockify.me/help/administration/user-roles-and-permissions/regular-users": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "bce6651631e5b8f480218ad4f73a736e54bc359c30a043ee218c0df610688bc7",
+    "fetched_at": "2025-10-27T18:20:39.483209"
+  },
+  "https://clockify.me/help/administration/customize-user-info-exports": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "c7d1ab99e103170d111847a35015aa022179eb9a7699d73e359720096560fb87",
+    "fetched_at": "2025-10-27T18:20:35.537639"
+  },
+  "https://clockify.me/help/administration/user-groups": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "f9ba9e6926a7b8844b81d0a88b0ea3ae72f5636a1ef0dc75d3d7bd4acbfaf9a0",
+    "fetched_at": "2025-10-27T18:20:38.532173"
+  },
+  "https://clockify.me/help/administration/subscription-plans": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "0d33562dd618e77f673c963670449c18c8a1f22a325ceb5202aa4b8f8b530321",
+    "fetched_at": "2025-10-27T18:20:38.436323"
+  },
+  "https://clockify.me/help/administration/deleting-account": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "af960dca8dbda5265537743d9ddb8e2be78b9edd5ba7d3f5e06df869d6a916e9",
+    "fetched_at": "2025-10-27T18:20:35.473415"
+  },
+  "https://clockify.me/help/administration/user-roles-and-permissions/admins": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "5e5a20d560a17eaf851dc78c1181edf27fa06d00400dd9ab680ffb1deb0c4b49",
+    "fetched_at": "2025-10-27T18:20:39.446757"
+  },
+  "https://clockify.me/help/administration/inviting-users": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "331527ccb59714bf5513f57620394c602a700a6235d4251d82fe0b767458c3e6",
+    "fetched_at": "2025-10-27T18:20:36.381972"
+  },
+  "https://clockify.me/help/administration/manage-accounts": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "91f9453fa6342c1e29a3709994718ceda972e6050724bb9c6854bf9090ceab53",
+    "fetched_at": "2025-10-27T18:20:36.326758"
+  },
+  "https://clockify.me/help/administration/time-zones": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "417bdb321238bd48c8e4503319bd1410df7c8e56ae91fc9f4bf1c360a42cfc9b",
+    "fetched_at": "2025-10-27T18:20:38.500281"
+  },
+  "https://clockify.me/help/administration/free-trial": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "14d3eed24ea51690cd76c4be674abe7cc4f447e766d6dfb3b2b3c1981d29399b",
+    "fetched_at": "2025-10-27T18:20:36.471110"
+  },
+  "https://clockify.me/help/administration/hide-time": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "3815832e3fe236fcb0b02f59eb8b46384d9541d910c3b8ad531347c54024f9eb",
+    "fetched_at": "2025-10-27T18:20:36.438668"
+  },
+  "https://clockify.me/help/administration/targets-reminders": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "a5b0915b6ec46a58f9264338081695ca29d493fb8de52d020b56d8a7ea4d254a",
+    "fetched_at": "2025-10-27T18:20:38.566263"
+  },
+  "https://clockify.me/help/administration/audit-log": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "74729771922f8bff3d4a5c546103f48fb79e25c9828b5ac6ada571fff9f7659d",
+    "fetched_at": "2025-10-27T18:20:34.458915"
+  },
+  "https://clockify.me/help/administration/api-webhook-settings": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "d32cd4beab5d9c05ae8b65ebeb64a674be389e47952dcd57cf448ac688c96682",
+    "fetched_at": "2025-10-27T18:20:34.422627"
+  },
+  "https://clockify.me/help/administration/subscribe-upgrade": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "61103fab6f3fa8a96c276c2d8770d60db2727cc614c98da7a1a080d6b2683bfb",
+    "fetched_at": "2025-10-27T18:20:37.416970"
+  },
+  "https://clockify.me/help/administration/edit-profiles": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "da3ad62a426a2f0c039634a12ff267466f4fb5adcfd23f02fbda54b2ed62ffc6",
+    "fetched_at": "2025-10-27T18:20:35.576204"
+  },
+  "https://clockify.me/help/administration/change-mail-address": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "444ba0398c2f8c071ebb137b525c151ca59fea751ccfd00a490b9a32c2c380ea",
+    "fetched_at": "2025-10-27T18:20:34.338630"
+  },
+  "https://clockify.me/help/administration/payment-process": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "924d8c02157759146819f59c4c090634d520c4929f606ee5753015d8a6202b9d",
+    "fetched_at": "2025-10-27T18:20:37.377151"
+  },
+  "https://clockify.me/help/administration/profile-settings": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "61f8dfbb41f96f77a3837258bf08619d1cc35a355b890f0f29d8636962a3657c",
+    "fetched_at": "2025-10-27T18:20:37.453479"
+  },
+  "https://clockify.me/help/integrations/tracking-integrations-integrations/jira-integration": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "3c56cc3f52a2a2ba370aa062d214794c55b348aaba7d968b92fb3c2aa4f22a59",
+    "fetched_at": "2025-10-27T18:20:52.459898"
+  },
+  "https://clockify.me/help/integrations/clockify-notifications-in-pumble-app": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "ade0b35d438854aae88c79970a256a3d9eed92c6e1f7b4a72f968f4d391fbd45",
+    "fetched_at": "2025-10-27T18:20:52.497752"
+  },
+  "https://clockify.me/help/integrations/tracking-integrations-integrations/quickbooks-integration": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "c4b629130ae4e4641596a9e0fafba789f84417cc8650d352f5210fed4b0aea6b",
+    "fetched_at": "2025-10-27T18:20:53.483265"
+  },
+  "https://clockify.me/help/integrations/integrations": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "e0d7b07832528187b884e11984815d722cae527843d506a93c45e46413b36f73",
+    "fetched_at": "2025-10-27T18:20:52.422654"
+  },
+  "https://clockify.me/help/projects/tracking-project-profitability": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "386f066e22a59a6e4ff8998ffd3a56e987242e06902ee78a0debf2e4802c553d",
+    "fetched_at": "2025-10-27T18:20:58.612852"
+  },
+  "https://clockify.me/help/projects/working-with-tasks": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "67931b9f0225296a7ccebbcabb8415843aa13a142a8b0abc44d48e6ef66c7393",
+    "fetched_at": "2025-10-20T16:01:33.933765"
+  },
+  "https://clockify.me/help/projects/invoicing": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "619a8a4ca3b32e7756e6e9245d7068e1e66be412362726fa200fed703f71674f",
+    "fetched_at": "2025-10-27T18:20:55.487374"
+  },
+  "https://clockify.me/help/projects/schedule-team-assignments": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "9d7c452c058cb88ff6d1fb9d89f171f1afc78feaf791fe88172ec1b160f63cc9",
+    "fetched_at": "2025-10-27T18:20:58.670680"
+  },
+  "https://clockify.me/help/projects/forecasting": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "7c666b19397390e47650dd29534e600d3cf9781fe68d7350b1981a0c5eac14c7",
+    "fetched_at": "2025-10-27T18:20:55.534256"
+  },
+  "https://clockify.me/help/projects/manage-scheduled-team-assignments": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "bde145a36760c2568350615cec59c9d8fba0829a3e474b7355ee38e47a3615bb",
+    "fetched_at": "2025-10-27T18:20:56.511235"
+  },
+  "https://clockify.me/help/projects/project-filter": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "13bd4785d07d464046c6ac6e277d62fa37849ae6eca6b3ea5911d8ccfae0e1cb",
+    "fetched_at": "2025-10-27T18:20:57.620548"
+  },
+  "https://clockify.me/help/projects/forecast-project-budget": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "b394f8b15af8001a41c7a34b49612f24b56c907e5818874d8868f4cb5685845b",
+    "fetched_at": "2025-10-27T18:20:54.522419"
+  },
+  "https://clockify.me/help/projects/manage-multiple-projects": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "35f0d802964ac8606febc7c42b8936ec6c7b549ac3e53fbf44a04b59337ba67d",
+    "fetched_at": "2025-10-27T18:20:56.436850"
+  },
+  "https://clockify.me/help/projects/creating-projects": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "845d2b53198297451d6a971c24476b642cfa0f25e950c6f8f0c2820d64e54aa6",
+    "fetched_at": "2025-10-27T18:20:53.519870"
+  },
+  "https://clockify.me/help/projects/customize-project-exports": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "72749c5b0f1220d77cdffc971b7c2687b5ff62d3d8d7410ce809b9fd0d5d63bf",
+    "fetched_at": "2025-10-27T18:20:53.449036"
+  },
+  "https://clockify.me/help/projects/manage-scheduled-projects": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "1f7118e702457314b0599e1c26115bf3f66245d8e3a3b39921bdb4e88ea71812",
+    "fetched_at": "2025-10-27T18:20:56.548515"
+  },
+  "https://clockify.me/help/projects/invoicing-tracked-time-expenses": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "40c00acb1d3fc092ce0051b9957d96fc6e68f933b4bbd677c9415c26f9265d73",
+    "fetched_at": "2025-10-27T18:20:56.477398"
+  },
+  "https://clockify.me/help/projects/alerts": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "ea69e422748c38c6ad72278caaf9c7a3bcbb3c7b2545731ab45a4748da80f507",
+    "fetched_at": "2025-10-27T18:20:53.392384"
+  },
+  "https://clockify.me/help/projects/tracking-project-progress": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "cd831cb712ce88336cd0cd5b4a47c4e65ab8e0fc185953b07000949415ee327b",
+    "fetched_at": "2025-10-27T18:20:59.497478"
+  },
+  "https://clockify.me/help/projects/forecast-chart": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "c7a8865078dc97778fbae6ede6fb260c92dae2ff80e3b9851391d208eb492f88",
+    "fetched_at": "2025-10-27T18:20:54.456026"
+  },
+  "https://clockify.me/help/projects/exporting-projects": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "1c4385bce7e98e41a92f792616ed2e83e853a88a97d5b6ca11cc4adf0707ddae",
+    "fetched_at": "2025-10-27T18:20:54.491543"
+  },
+  "https://clockify.me/help/projects/export-invoices": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "ead0df5f5284a79e770067d0d8586c7dda5f4426c952d5a65eb766dacf645eee",
+    "fetched_at": "2025-10-27T18:20:54.402316"
+  },
+  "https://clockify.me/help/projects/project-budget": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "484a65264214dcd6fd07179d93881f095d7ac4178c3dba928b801d1d28b9c7f3",
+    "fetched_at": "2025-10-27T18:20:57.475811"
+  },
+  "https://clockify.me/help/projects/formatting-project-note": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "2a2707b889e2bb4a3acce4b2433e88961a65c6e6c9e5c2694220c2f1d20c046c",
+    "fetched_at": "2025-10-27T18:20:55.565461"
+  },
+  "https://clockify.me/help/projects/managing-people-on-projects": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "33674021baeb17df3838747ea6c45bb539c4c47cfa9b2fbb0337adebe803c61f",
+    "fetched_at": "2025-10-27T18:20:57.587327"
+  },
+  "https://clockify.me/help/projects/sending-invoice-emails": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "101b8e476894f2a82bc0865e6bf48dd704ceae2be986340e6c710bb28d3d71e8",
+    "fetched_at": "2025-10-27T18:20:58.744593"
+  },
+  "https://clockify.me/help/projects/project-templates": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "8bc5e382a9aff78874c84e24cd7de5befeebf38f8ce33c22edaaebc70214ac67",
+    "fetched_at": "2025-10-27T18:20:57.554602"
+  },
+  "https://clockify.me/help/contact/sales-contact": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "f352307080c22c256468d422f9e5c8a09b21c276f6308535250600768d4af364",
+    "fetched_at": "2025-10-20T16:01:39.076907"
+  },
+  "https://clockify.me/help/getting-started/data-regions": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "746e0de8f5ce23684b2ab1d061d607c84cf0dff4a8a5fdc7032a0422d3512956",
+    "fetched_at": "2025-10-27T18:20:44.427691"
+  },
+  "https://clockify.me/help/getting-started/getting-started-as-admin-and-workspace-owner/set-up-alerts-reminders-for-your-workspace-members": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "db9411b4aa6fc86e24d62fd670e69715bbf282f6e7564e2049771fc31b60c9c0",
+    "fetched_at": "2025-10-27T18:20:47.359411"
+  },
+  "https://clockify.me/help/getting-started/approve-teams-time-entries": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "83f69e6a6a0faf9327ba79da544a36f35009f821c962f246b0e44b9dfb031385",
+    "fetched_at": "2025-10-27T18:20:43.451625"
+  },
+  "https://clockify.me/help/getting-started/getting-started-as-admin-and-workspace-owner/invite-users-assign-roles-in-your-workspace": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "50eaa3d04f33ece880dbb9e93be4026fefd7cd17daef6dae00e0f2512726643a",
+    "fetched_at": "2025-10-27T18:20:46.370446"
+  },
+  "https://clockify.me/help/getting-started/request-time-off-regular-user": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "24d043ce203598c8ba6a45a5303c49b8ffb4be59928cdd08dfc2b69ec333b88e",
+    "fetched_at": "2025-10-27T18:20:49.423514"
+  },
+  "https://clockify.me/help/getting-started/system-requirements-for-using-clockify": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "0eb8346521b5793eb0d9b2954bd9679950b6229359df58a575398f8429a2e13a",
+    "fetched_at": "2025-10-27T18:20:51.500485"
+  },
+  "https://clockify.me/help/getting-started/single-sign-on-sso": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "d6ae006599877eaa1d7bfeb6b0c749d422e7c6e92aa9a8680d2848beef64d9a8",
+    "fetched_at": "2025-10-27T18:20:50.513221"
+  },
+  "https://clockify.me/help/getting-started/manage-time-off-for-your-team": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "83be7fae64e5cf582a01fbcc38c9a0099bcda3180d36a7018f9a50434cff0038",
+    "fetched_at": "2025-10-27T18:20:48.441573"
+  },
+  "https://clockify.me/help/getting-started/start-using-clockify": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "5de980d397ea9e5fc4fc19b93da2d83d5280376803e3ae3bcd56f82eeaaf29ba",
+    "fetched_at": "2025-10-27T18:20:50.443007"
+  },
+  "https://clockify.me/help/getting-started/how-is-your-clockify-account-protected-with-passwordless-login": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "291216ef7896eabf6384fa5d7a08860e574d5a3f0ef74db21f9395a3cac16524",
+    "fetched_at": "2025-10-27T18:20:48.479097"
+  },
+  "https://clockify.me/help/getting-started/getting-started-as-admin-and-workspace-owner/create-manage-projects-clients-on-workspace-level": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "8f40674fb0eb74e6104d09baa65f647025d237aa26c5708b3d2028adeb5ab8d6",
+    "fetched_at": "2025-10-27T18:20:45.454266"
+  },
+  "https://clockify.me/help/getting-started/check-your-assigned-role": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "075a0d9bd2383f365c8e542b30c88d56645d729725c9de5e5898eb75193aece9",
+    "fetched_at": "2025-10-27T18:20:43.557497"
+  },
+  "https://clockify.me/help/getting-started/welcome-to-clockify": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "3eb2674a6ed59e673fc8483f83b66c7e94d1d11831112ecee51e88de4044f4bf",
+    "fetched_at": "2025-10-27T18:20:52.382030"
+  },
+  "https://clockify.me/help/getting-started/clockify-glossary": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "005e35b0fde4f9f467da8198106ea9f9d2b205a3eb0103dc57e2bb8547d33291",
+    "fetched_at": "2025-10-27T18:20:44.466128"
+  },
+  "https://clockify.me/help/getting-started/getting-started-as-admin-and-workspace-owner/sign-up-and-log-in-as-admin-or-workspace-owner": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "4730f0cea4eba3e6445f6b9dbb2f9d1e73c4224ed66e2f31ae25ba9fea880bd6",
+    "fetched_at": "2025-10-27T18:20:48.375419"
+  },
+  "https://clockify.me/help/getting-started/getting-started-as-admin-and-workspace-owner/edit-entries-for-workspace-members": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "cd8a3fc5cfc30259733eca73eb4dd5f8f2a98b727e321d8d4686392c2b1fa9f3",
+    "fetched_at": "2025-10-27T18:20:46.477009"
+  },
+  "https://clockify.me/help/getting-started/bulk-edit-time-entries-for-your-team": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "f6fc0157cd4a33f591d820056f87fe54451000321a259d36c3a9fa04bb1dc6a7",
+    "fetched_at": "2025-10-27T18:20:43.519106"
+  },
+  "https://clockify.me/help/getting-started/getting-started-as-admin-and-workspace-owner/set-up-your-workspace": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "9abcab4904ad484beaea6bb0fe6517146a24a9785c21c3f9af360ba9645b296a",
+    "fetched_at": "2025-10-27T18:20:47.413221"
+  },
+  "https://clockify.me/help/getting-started/onboarding-checklist": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "40d5bf019e0cb364bff8b37d5a25821c56ebcda4c734ae86dcd2e798d014498d",
+    "fetched_at": "2025-10-27T18:20:49.457111"
+  },
+  "https://clockify.me/help/getting-started/getting-started-as-admin-and-workspace-owner/approve-entries-time-off-requests-for-workspace-members": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "00739d742e51c108b0bf11036ae2679a4f85bcbbe76734d90bc56db3404d91a1",
+    "fetched_at": "2025-10-27T18:20:45.531878"
+  },
+  "https://clockify.me/help/getting-started/getting-started-as-admin-and-workspace-owner/manage-subscription-billing-for-your-workspace": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "5f92fa368eb3f4ff28cc17dc0c90803cd752c6ab853fc822f2bcd32ca5d557a7",
+    "fetched_at": "2025-10-27T18:20:47.451036"
+  },
+  "https://clockify.me/help/getting-started/sign-up-log-in-as-manager": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "3cee57a96a5af77cd09894ed4e804ff885bb5f78bbcbe4839f153afbaa0d2b4e",
+    "fetched_at": "2025-10-27T18:20:50.379432"
+  },
+  "https://clockify.me/help/getting-started/team-overview": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "1741ac86f01aa1b8139d36cf065f23bcf9eb997d6fe27c45db4c02caf4b197a6",
+    "fetched_at": "2025-10-27T18:20:51.532868"
+  },
+  "https://clockify.me/help/getting-started/getting-started-as-admin-and-workspace-owner/get-started-with-workspace-members-reports": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "b0ab27e5b2d60cc69350f825669c8fdc13cfc8411cde1ba9b1cb37931307e5a6",
+    "fetched_at": "2025-10-27T18:20:47.040195"
+  },
+  "https://clockify.me/help/getting-started/clockify-api-overview": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "22ea2df7f1374e9e9eddd771ec59385ed6311deb439a9c482f897f1df47523f3",
+    "fetched_at": "2025-10-27T18:20:44.367265"
+  },
+  "https://clockify.me/help/getting-started/categorize-time-using-required-fields-tags": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "194a0bc40328e16dd79b6123e6c6e8f80b121e75e27e04b28fb555e58b7b8cb5",
+    "fetched_at": "2025-10-27T18:20:43.587581"
+  },
+  "https://clockify.me/help/getting-started/track-your-time-as-regular-user": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "534fa5717f9400d3475c50d3ce750ffff8d6b69dcea7fdd85d852ebc4a1f4ba2",
+    "fetched_at": "2025-10-27T18:20:51.460533"
+  },
+  "https://clockify.me/help/apps/introduction-to-add-ons": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "5a5d8bfee5bfd35e5883c90be59ed8f179550a6ab3a24a8de0dbd5e2c8b9aff1",
+    "fetched_at": "2025-10-27T18:20:40.330526"
+  },
+  "https://clockify.me/help/apps/chrome-extension": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "9c2f1e001f7e871b031ee3c6fd40d466a9a52665676fe874250432dd4c051f93",
+    "fetched_at": "2025-10-27T18:20:40.369593"
+  },
+  "https://clockify.me/help/apps/iphone-app": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "a57f9f222dca7ba94134ef54fbc080cd5632410233742b2d053b6406fc2a6654",
+    "fetched_at": "2025-10-27T18:20:40.412541"
+  },
+  "https://clockify.me/help/apps/android-app": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "867fbc7c80b8e6547fb93749c5d5743f2e7aa16386f0f4369ffc773c758c4087",
+    "fetched_at": "2025-10-27T18:20:40.475493"
+  },
+  "https://clockify.me/help/apps/manage-and-configure-add-ons": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "5cde6f2eed44e1f5d8fe5ffbeddc21b5c02811c7f8b8584f7ac4c8b470222cae",
+    "fetched_at": "2025-10-27T18:20:41.351729"
+  },
+  "https://clockify.me/help/apps/linux-desktop-app": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "26e96f4d61e116e65c16db891d76a417376b62029aff861c3d33a38becf55ca7",
+    "fetched_at": "2025-10-27T18:20:41.390548"
+  },
+  "https://clockify.me/help/apps/mac-app-appstore-version": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "4138147ce16e9f8c5231f43246298b2f254fdee46c1fc54fcfdabe1080bad665",
+    "fetched_at": "2025-10-27T18:20:41.437341"
+  },
+  "https://clockify.me/help/apps/mac-desktop-app": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "94a5384ea57337677a77ffb01caf19811b04595c6ebd16db08ba62d293200f9c",
+    "fetched_at": "2025-10-27T18:20:41.477652"
+  },
+  "https://clockify.me/help/apps/windows-desktop-app": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "c0e0658c4abc7b61b7cd5d27f12a27dd4cd983e627c397896f84ea4cb92f886c",
+    "fetched_at": "2025-10-27T18:20:42.597976"
+  },
+  "https://clockify.me/help/apps/start-using-add-ons": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "123d6795cd29d3f5c16e9d220a31a335c302dc198857a0f9da430bb50b431737",
+    "fetched_at": "2025-10-27T18:20:42.674510"
+  },
+  "https://clockify.me/help/apps/screenshots": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "ea59ac6d1b10d6115fb69f7cb9e7530e81d0a55720411f384043961d633d9534",
+    "fetched_at": "2025-10-27T18:20:42.712282"
+  },
+  "https://clockify.me/help/apps/manage-your-account": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "1978bea36e1f7de8646a1348af94fc6d4cf7566ca181cd0e25674d890247e97a",
+    "fetched_at": "2025-10-27T18:20:42.745684"
+  },
+  "https://clockify.me/help/getting-started/create-manage-projects-clients-for-your-team": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "2af7a13331d81400374116ecac3414b7cb2e766d4c37f6066728867b4fe52849",
+    "fetched_at": "2025-10-27T18:20:44.514934"
+  },
+  "https://clockify.me/help/getting-started/get-started-with-team-reports": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "de70f573864ff26e8a2be21b4c4cd13739cca3663804efe952e6fec8e773d288",
+    "fetched_at": "2025-10-27T18:20:45.386118"
+  },
+  "https://clockify.me/help/getting-started/getting-started-as-admin-and-workspace-owner/create-manage-holidays-time-off-policies": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "e83dd74747d743500926ba4bc23f6d88f9c570f233156ce987e30f376b5ee11e",
+    "fetched_at": "2025-10-27T18:20:45.495512"
+  },
+  "https://clockify.me/help/getting-started/getting-started-as-admin-and-workspace-owner/define-required-fields-for-time-entries": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "9e934f954946e1c08a2e442e6c92124333ba9392ff5ff15e7c1652548b346942",
+    "fetched_at": "2025-10-27T18:20:46.439212"
+  },
+  "https://clockify.me/help/getting-started/integrate-google-outlook-with-your-clockify-account": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "114e89a00111a280bc0aaec5ee8947cab08b0f3a8863366d627344182ee89fab",
+    "fetched_at": "2025-10-27T18:20:48.510945"
+  },
+  "https://clockify.me/help/getting-started/navigate-your-dashboard": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "17d3087f14ce00b7a91f82382ca1425042b53aa889d34981fdb1d2f47988481d",
+    "fetched_at": "2025-10-27T18:20:49.387993"
+  },
+  "https://clockify.me/help/getting-started/manage-your-profile-settings": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "33a7d73d5fb586b9a58cd10b1ba0e987cdee989edf7583f3c81a054ec8989724",
+    "fetched_at": "2025-10-27T18:20:49.492836"
+  },
+  "https://clockify.me/help/getting-started/sign-up-log-in-as-regular-user": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "f2eeaa0057b2cd0440b4a817d4ff54083e1be522343494f7db5ca585af73fd3f",
+    "fetched_at": "2025-10-27T18:20:50.479389"
+  },
+  "https://clockify.me/help/getting-started/understand-use-your-reports": {
+    "etag": "",
+    "last_modified": "",
+    "sha256": "134a624c3604016d8d7b40a611a176099da3bc411c86e875ec9440d97369419f",
+    "fetched_at": "2025-10-27T18:20:51.398781"
+  }
+}

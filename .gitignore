@@ -1,0 +1,73 @@
+index/**
+!index/.gitkeep
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+ENV/
+env.bak/
+venv.bak/
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Logs (keep logs/ directory structure but ignore content)
+logs/*.txt
+logs/**/*.txt
+logs/*.json
+logs/**/*.json
+logs/*.jsonl
+logs/**/*.jsonl
+logs/*.md
+logs/**/*.md
+*.log
+
+# Large files
+*.bin
+*.pkl
+*.tar.gz
+*.zip
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Temporary
+tmp/
+temp/
+*.tmp
+codex/
+
+# Cache
+.cache/
+.mypy_cache/
+.venv/
+__pycache__/
+.mypy_cache/
+.pytest_cache/
+logs/
+index/**
+!index/.gitkeep
+*.log
+*.DS_Store

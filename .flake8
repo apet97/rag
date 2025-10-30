@@ -1,0 +1,7 @@
+[flake8]
+max-line-length = 140
+extend-ignore = E203,W503
+per-file-ignores =
+    src/**/__init__.py:F401
+    src/**/*.py:F401,F841,C901
+max-complexity = 30

@@ -1,0 +1,121 @@
+{
+  "description": "Evaluation set for Clockify RAG retrieval quality. Each entry tests whether key information is retrievable.",
+  "eval_cases": [
+    {
+      "id": "def_pto",
+      "query": "What is PTO?",
+      "type": "definition",
+      "expected_keywords": ["paid", "time", "off", "leave", "vacation"],
+      "description": "Definition of Paid Time Off"
+    },
+    {
+      "id": "def_billable_rate",
+      "query": "What is a billable rate?",
+      "type": "definition",
+      "expected_keywords": ["billable", "rate", "client", "charged"],
+      "description": "Definition of billable rate vs cost rate"
+    },
+    {
+      "id": "def_cost_rate",
+      "query": "What is cost rate?",
+      "type": "definition",
+      "expected_keywords": ["cost", "rate", "internal", "labor"],
+      "description": "Definition of cost rate for employees"
+    },
+    {
+      "id": "def_timesheet",
+      "query": "What is a timesheet?",
+      "type": "definition",
+      "expected_keywords": ["timesheet", "record", "hours", "work"],
+      "description": "Definition of timesheet"
+    },
+    {
+      "id": "def_sso",
+      "query": "What is SSO?",
+      "type": "definition",
+      "expected_keywords": ["sso", "single", "sign-on", "authentication"],
+      "description": "Single Sign-On authentication definition"
+    },
+    {
+      "id": "how_create_timesheet",
+      "query": "How do I create a timesheet?",
+      "type": "howto",
+      "expected_keywords": ["create", "timesheet", "submit", "hours"],
+      "description": "Steps to create and submit a timesheet"
+    },
+    {
+      "id": "how_approve_timesheet",
+      "query": "How do I approve timesheets as a manager?",
+      "type": "howto",
+      "expected_keywords": ["approve", "timesheet", "manager", "submit"],
+      "description": "Manager approval workflow for timesheets"
+    },
+    {
+      "id": "how_set_billable_rate",
+      "query": "How do I set billable rates?",
+      "type": "howto",
+      "expected_keywords": ["billable", "rate", "set", "client", "project"],
+      "description": "Setting billable rates for projects"
+    },
+    {
+      "id": "how_enable_rounding",
+      "query": "How do I enable time rounding?",
+      "type": "howto",
+      "expected_keywords": ["rounding", "time", "round", "interval", "minutes"],
+      "description": "Enable automatic time rounding feature"
+    },
+    {
+      "id": "how_configure_sso",
+      "query": "How do I configure SSO for my workspace?",
+      "type": "howto",
+      "expected_keywords": ["sso", "configure", "setup", "workspace", "authentication"],
+      "description": "SSO configuration and setup"
+    },
+    {
+      "id": "how_add_team_member",
+      "query": "How do I add a team member to my workspace?",
+      "type": "howto",
+      "expected_keywords": ["add", "team", "member", "workspace", "invite"],
+      "description": "Adding team members and setting permissions"
+    },
+    {
+      "id": "how_create_project",
+      "query": "How do I create a project?",
+      "type": "howto",
+      "expected_keywords": ["create", "project", "new", "workspace"],
+      "description": "Creating a new project in workspace"
+    },
+    {
+      "id": "comp_billable_vs_cost",
+      "query": "What is the difference between billable rate and cost rate?",
+      "type": "comparison",
+      "expected_keywords": ["billable", "cost", "rate", "client", "internal", "difference"],
+      "description": "Comparison of billable vs cost rates"
+    },
+    {
+      "id": "comp_workspace_roles",
+      "query": "What are the different roles in a workspace?",
+      "type": "comparison",
+      "expected_keywords": ["role", "admin", "manager", "member", "permission"],
+      "description": "Overview of workspace roles and permissions"
+    },
+    {
+      "id": "troubleshoot_timesheet_lock",
+      "query": "Why is my timesheet locked?",
+      "type": "troubleshooting",
+      "expected_keywords": ["lock", "timesheet", "locked", "edit", "approve"],
+      "description": "Understanding timesheet locking"
+    }
+  ],
+  "scoring": {
+    "hit_at_5": "Whether expected keywords appear in top 5 results (minimum 80%)",
+    "hit_at_12": "Whether expected keywords appear in top 12 results (minimum 95%)",
+    "citation_coverage": "Whether retrieved chunks include source URLs and anchors (100%)",
+    "latency_p99": "99th percentile latency < 500ms for /search, < 2s for /chat"
+  },
+  "baseline_targets": {
+    "hit_at_5_pct": 80,
+    "hit_at_12_pct": 95,
+    "avg_latency_ms": 250
+  }
+}

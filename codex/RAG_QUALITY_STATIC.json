@@ -1,0 +1,9 @@
+{
+  "chunk_size": null,
+  "overlap": null,
+  "hybrid_retrieval": true,
+  "uses_mmr": true,
+  "uses_reranker": true,
+  "citation_pattern_present": false,
+  "answerability_check_present": true
+}

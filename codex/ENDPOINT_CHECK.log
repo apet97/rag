@@ -1,0 +1,12 @@
+Thu Oct 30 19:21:24 CET 2025
+Checking tags…
+curl: (28) Failed to connect to 10.127.0.192 port 11434 after 1006 ms: Timeout was reached
+tags failed
+
+Test generate…
+curl: (28) Failed to connect to 10.127.0.192 port 11434 after 1006 ms: Timeout was reached
+generate failed
+
+Test chat…
+curl: (28) Failed to connect to 10.127.0.192 port 11434 after 1006 ms: Timeout was reached
+chat failed

@@ -1,0 +1,158 @@
+# Clockify Glossary #
+
+## Time Tracking Fundamentals ##
+
+### Timesheet #
+A weekly or project-based record of all time entries logged by a team member. Timesheets can be submitted for approval and are used for payroll, billing, and project tracking.
+
+### Time Entry #
+A single record of time spent on a task, including start time, end time, duration, project, and optional tags.
+
+### Duration #
+The total amount of time logged for a time entry, typically measured in hours and minutes.
+
+### Timer #
+A real-time clock used to record time as work is being performed. Can be started, paused, and stopped.
+
+### Manual Entry #
+Time entry created by directly entering start and end times, rather than using a running timer.
+
+## Project & Task Management ##
+
+### Project #
+A container for organizing time entries, often corresponding to client work or internal initiatives. Projects can have budgets, rates, and team members.
+
+### Task #
+A specific unit of work within a project. Tasks can be assigned to team members and have estimated durations.
+
+### Estimate #
+A predicted duration for completing a task or project. Used for project planning and budget tracking.
+
+### Budget #
+A spending limit for a project, either in hours or currency. Helps track project profitability.
+
+## Billing & Rates ##
+
+### Billable #
+Time that should be invoiced to a client. Marked as billable in time entries.
+
+### Billable Rate #
+The hourly or fixed rate charged to a client for billable work.
+
+### Cost Rate #
+The internal labor cost or rate used for cost analysis and profitability calculations.
+
+### Invoicing #
+The process of generating and sending bills to clients based on billable time.
+
+### Time Rounding #
+Automatically rounding logged time to the nearest interval (e.g., 15 minutes). Used for billing consistency.
+
+## Approvals & Workflow ##
+
+### Timesheet Approval #
+The process where managers review and approve submitted timesheets before they are finalized.
+
+### Manager Approval #
+A workflow step where a designated manager verifies and approves time entries or timesheets.
+
+### Pending #
+Status indicating that a timesheet or approval request is awaiting action.
+
+### Rejected #
+Status indicating that a timesheet has been sent back by an approver for revision.
+
+## Workspace & Team Management ##
+
+### Workspace #
+A top-level container holding projects, team members, and time tracking data. Similar to an organization or company account.
+
+### Member #
+A person added to a workspace who can log time and be assigned to projects.
+
+### Role #
+A permission level assigned to team members (e.g., Admin, Manager, Member). Controls what actions a person can perform.
+
+### Team #
+A group of members working together, often organized by department or project.
+
+### User Group #
+A collection of team members used for bulk operations or permissions management.
+
+### Invitation #
+A notification sent to a person to join a workspace.
+
+## Reports & Analytics ##
+
+### Report #
+A summary view of time tracking data, including hours logged, costs, and billable amounts.
+
+### Summary Report #
+A high-level overview of time by project, member, or date range.
+
+### Detailed Report #
+A granular breakdown including individual time entries with all associated metadata.
+
+### CSV Export #
+Downloading report data in comma-separated values format for use in external tools.
+
+### PDF Export #
+Generating a printable PDF version of a report.
+
+### Scheduled Report #
+An automated report that is generated and emailed on a regular schedule (daily, weekly, monthly).
+
+## Features & Integrations ##
+
+### Tags #
+Custom labels applied to time entries for categorization and filtering (e.g., "Frontend", "Support", "Code Review").
+
+### Activity Log #
+A record of all changes made in the workspace, including user actions and timestamp information.
+
+### Audit Log #
+A detailed log of administrative actions and system events for compliance and troubleshooting.
+
+### Idle Detection #
+Automatic pausing of a running timer when no activity is detected on the device.
+
+### Pomodoro Timer #
+A time management technique using a 25-minute focused work interval followed by a short break. Supported as a timer type in Clockify.
+
+### Kiosk Mode #
+A simplified time clock interface for employees to clock in and out using a PIN code or card swipe.
+
+### Webhook #
+An automated callback sent to an external system when specific events occur in Clockify (e.g., time entry created).
+
+### SSO (Single Sign-On) #
+Integration allowing users to log in with corporate credentials (SAML, OAuth).
+
+### PTO (Paid Time Off) #
+Time entries logged for vacation, sick leave, or other paid leave. Often tracked separately from billable work.
+
+## Time Management ##
+
+### Time Off #
+Any period when an employee is not available to work, such as vacation or sick leave.
+
+### Holiday #
+A designated day or period when the organization is closed and employees are not expected to log work time.
+
+### Vacation #
+Planned time off taken by an employee, typically tracked in PTO entries.
+
+### Billable Hours #
+The total number of hours logged that should be invoiced to a client.
+
+### Non-Billable Hours #
+Time spent on internal tasks, admin work, or other work that is not charged to clients.
+
+### Member Rate #
+The specific billing or cost rate assigned to an individual team member.
+
+### Project Rate #
+A billing or cost rate that applies to all work on a specific project.
+
+### Workspace Rate #
+A default rate applied across an entire workspace unless overridden at the project or member level.

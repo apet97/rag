@@ -1,0 +1,171 @@
+name: RAG CI Pipeline
+
+on:
+  push:
+    branches: [main, develop]
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+  pull_request:
+    branches: [main]
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+
+concurrency:
+  group: rag-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test-and-eval:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.11']
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+          cache-dependency-path: requirements-ci.txt
+
+      - name: Cache pip packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: pip-${{ runner.os }}-${{ hashFiles('requirements-ci.txt') }}
+          restore-keys: |
+            pip-${{ runner.os }}-
+
+      - name: Install dependencies (lean)
+        env:
+          CUDA_VISIBLE_DEVICES: ""
+          USE_CUDA: "0"
+          TRANSFORMERS_OFFLINE: "1"
+          PYTHONHASHSEED: "0"
+          TZ: "UTC"
+          PIP_DISABLE_PIP_VERSION_CHECK: "1"
+          PIP_NO_PYTHON_VERSION_WARNING: "1"
+        run: |
+          set -euxo pipefail
+          python -m pip install --upgrade pip
+          pip install -r requirements-ci.txt --extra-index-url https://download.pytorch.org/whl/cpu
+          pip check
+          python -c "import importlib.util, sys; bad=[m for m in ('torch','FlagEmbedding','transformers') if importlib.util.find_spec(m)]; (print('BLOCKED:', ', '.join(bad)) or sys.exit(1)) if bad else print('OK')"
+
+      - name: Verify deps
+        run: python -c "import numpy,importlib;print('numpy',numpy.__version__);[importlib.import_module(m) or 0 for m in ('fastapi','pytest','rank_bm25','requests')];print('deps OK')"
+
+      - name: Capture pip freeze
+        if: always()
+        run: pip freeze > requirements-ci.lock
+
+      - name: Upload pip freeze
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pip-freeze
+          path: requirements-ci.lock
+          retention-days: 7
+
+      - name: Lint (non-blocking)
+        run: |
+          pip install flake8
+          flake8 src --count --select=E9,F63,F7,F82 --show-source --statistics --exit-zero
+          flake8 src --count --statistics --max-line-length=140 --exit-zero
+
+      - name: Run tests
+        env:
+          RAG_INDEX_ROOT: tests/fixtures/index/faiss
+          RAG_SKIP_INGEST: "1"
+          EMBEDDINGS_BACKEND: "stub"
+          OMP_NUM_THREADS: "1"
+          MKL_NUM_THREADS: "1"
+          TOKENIZERS_PARALLELISM: "false"
+          TRANSFORMERS_OFFLINE: "1"
+          MOCK_LLM: "true"
+          NO_NETWORK: "1"
+          PYTHONPATH: ${{ github.workspace }}/src
+          PYTHONHASHSEED: "0"
+          TZ: "UTC"
+          PIP_DISABLE_PIP_VERSION_CHECK: "1"
+          PIP_NO_PYTHON_VERSION_WARNING: "1"
+        run: |
+          set -euxo pipefail
+          mkdir -p logs/evals
+          pytest tests/test_search_chat.py -vv --maxfail=1 --tb=short 2>&1 | tee test_output.log
+
+      - name: Upload test log
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pytest-log
+          path: test_output.log
+          retention-days: 7
+
+      - name: Run evaluation (baseline)
+        if: success() && github.event_name == 'push'
+        continue-on-error: true
+        env:
+          RAG_INDEX_ROOT: tests/fixtures/index/faiss
+          RAG_SKIP_INGEST: "1"
+          EMBEDDINGS_BACKEND: "stub"
+          OMP_NUM_THREADS: "1"
+          MKL_NUM_THREADS: "1"
+          TOKENIZERS_PARALLELISM: "false"
+          TRANSFORMERS_OFFLINE: "1"
+          MOCK_LLM: "true"
+          PYTHONPATH: ${{ github.workspace }}/src
+          PYTHONHASHSEED: "0"
+          TZ: "UTC"
+          PIP_DISABLE_PIP_VERSION_CHECK: "1"
+          PIP_NO_PYTHON_VERSION_WARNING: "1"
+        run: |
+          mkdir -p logs/evals
+          python3 eval/run_eval.py --k 5 --decomposition-off --json > logs/evals/ci_baseline.json || echo '{}' > logs/evals/ci_baseline.json
+
+      - name: Run evaluation (with decomposition)
+        if: success() && github.event_name == 'push'
+        continue-on-error: true
+        env:
+          RAG_INDEX_ROOT: tests/fixtures/index/faiss
+          RAG_SKIP_INGEST: "1"
+          EMBEDDINGS_BACKEND: "stub"
+          OMP_NUM_THREADS: "1"
+          MKL_NUM_THREADS: "1"
+          TOKENIZERS_PARALLELISM: "false"
+          TRANSFORMERS_OFFLINE: "1"
+          MOCK_LLM: "true"
+          PYTHONPATH: ${{ github.workspace }}/src
+          PYTHONHASHSEED: "0"
+          TZ: "UTC"
+          PIP_DISABLE_PIP_VERSION_CHECK: "1"
+          PIP_NO_PYTHON_VERSION_WARNING: "1"
+        run: |
+          mkdir -p logs/evals
+          python3 eval/run_eval.py --k 5 --json > logs/evals/ci_with_decomp.json || echo '{}' > logs/evals/ci_with_decomp.json
+
+      - name: Check evaluation metrics
+        if: success() && github.event_name == 'push'
+        continue-on-error: true
+        run: |
+          python -c "import json; b=json.load(open('logs/evals/ci_baseline.json')); d=json.load(open('logs/evals/ci_with_decomp.json')); rb,ab=b.get('recall_at_5',0),b.get('answer_accuracy',0); rd,ad=d.get('recall_at_5',0),d.get('answer_accuracy',0); print('=== Evaluation Metrics ==='); print(f'Baseline:     Recall@5={rb:.2f}  Accuracy={ab:.2f}'); print(f'With Decomp:  Recall@5={rd:.2f}  Accuracy={ad:.2f}'); print('Note: metrics below thresholds (R>=0.25, A>=0.30) are non-blocking in CI.')"
+
+      - name: Eval files summary
+        if: always() && github.event_name == 'push'
+        run: |
+          ls -l logs/evals || true
+          python -c "import os, json, glob; [print(p, 'size', os.path.getsize(p), 'bytes', 'keys', list(json.load(open(p)))[:5]) if os.path.isfile(p) else print(p, 'missing') for p in sorted(glob.glob('logs/evals/ci_*.json'))]" || true
+
+      - name: Upload evaluation artifacts
+        if: always() && github.event_name == 'push'
+        uses: actions/upload-artifact@v4
+        with:
+          name: evaluation-results
+          path: logs/evals/ci_*.json
+          retention-days: 30

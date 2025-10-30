@@ -1,0 +1,26 @@
+id,question,answer_regex,source_url
+exports_csv,How do I export invoices to a CSV file in Clockify?,(?i)export.*csv|save.*csv|csv.*excel,https://clockify.me/help/projects/export-invoices
+approvals_api,What approvals workflow can you automate by default with the Clockify API?,(?i)time-?off requests? and approvals,https://clockify.me/help/getting-started/clockify-api-overview
+workspace_settings,Who can edit workspace settings and how do you reach that page?,(?i)workspace.*settings|owner|admin,https://clockify.me/help/track-time-and-expenses/workspaces
+billable_rates,Where do you set individual billable rates for project members?,(?i)projects? page.*access tab.*billable rate,https://clockify.me/help/projects/managing-people-on-projects
+user_roles,Which three core user roles does Clockify define for permissions?,(?i)admin.*manager.*regular,https://clockify.me/help/administration/user-roles-and-permissions/who-can-do-what
+shift_timeline,When you shift a scheduled project timeline, what happens automatically afterwards?,(?i)assignments? and tasks?.*automatically adjusted,https://clockify.me/help/projects/manage-scheduled-projects
+metadata_fields,How can invisible required fields capture metadata without cluttering the UI?,(?i)invisible fields.*metadata.*users won'?t see,https://clockify.me/help/track-time-and-expenses/define-required-fields
+kiosk_universal_pin,What does the kiosk Universal PIN allow you to do?,(?i)Universal PIN.*clock in.*any employee,https://clockify.me/help/track-time-and-expenses/pin
+kiosk_clock_out,How do you stop the work timer when clocking out on a kiosk?,(?i)Tap\s+Clock out.*finish your shift,https://clockify.me/help/track-time-and-expenses/track-time-on-kiosk
+auto_tracker_start,How do you start Auto tracker recording in the desktop app?,(?i)click\s+the\s+A icon.*Start Recording,https://clockify.me/help/track-time-and-expenses/auto-tracker
+time_rounding_toggle,Where do you turn on time rounding in Clockify?,(?i)turn.*on.*rounding|rounding.*toggle|rounding.*switch,https://clockify.me/help/track-time-and-expenses/time-rounding
+time_off_history,How do you open a member's time off balance history?,(?i)balance.*history|history.*balance|balance tab,https://clockify.me/help/track-time-and-expenses/accrue-time-off
+approvals_pending_tab,Where do submitted timesheets wait while pending approval?,(?i)Approvals.*Pending\s+tab,https://clockify.me/help/getting-started/approve-teams-time-entries
+lock_timesheets_toggle,Which menu lets you toggle the Lock entries switch?,(?i)Workspace settings.*Permissions.*Lock entries,https://clockify.me/help/track-time-and-expenses/lock-timesheets
+custom_export_customize,How do you customise which data appears when exporting reports?,(?i)Go to\s+a?\s?report.*Click\s+Export.*Choose\s+Customize,https://clockify.me/help/reports/customize-exports
+assign_admin_role,Where do you make someone an admin in Clockify?,(?i)Team\s+page.*\+Role.*Admin,https://clockify.me/help/getting-started/invite-users-assign-roles-in-your-workspace
+time_off_enable,Where do you enable the Time off feature before creating policies?,(?i)Workspace settings.*Time off.*Enable time off,https://clockify.me/help/track-time-and-expenses/create-manage-time-off-policy
+time_off_request_steps,Which page do you open to submit a time off request and what button do you press?,(?i)Go to\s+Time off\s+page.*Click\s+Request time off,https://clockify.me/help/track-time-and-expenses/request-time-off
+time_off_notifications,Where do you re-enable email notifications if you stop getting time off alerts?,(?i)Email notifications.*Time off.*checkbox.*enabled,https://clockify.me/help/troubleshooting/time-off-notification-issues
+custom_fields_create,Where do you create custom fields for time entries?,(?i)custom.*fields|create.*fields,https://clockify.me/help/track-time-and-expenses/custom-fields
+force_timer_today,Which setting blocks users from adding manual time for today or the future?,(?i)force.*timer|lock.*today|prevent.*add,https://clockify.me/help/track-time-and-expenses/lock-timesheets
+auto_lock_toggle,What option automatically keeps the lock date up to date?,(?i)Automatically update lock date,https://clockify.me/help/track-time-and-expenses/lock-timesheets
+targets_reminders,Where do owners configure timesheet reminder targets?,(?i)Team\s+page\s*>\s*Reminders tab,https://clockify.me/help/administration/targets-reminders
+remind_to_approve,How do admins nudge managers to approve pending timesheets?,(?i)click\s+the\s+Remind to approve\s+button,https://clockify.me/help/getting-started/approve-teams-time-entries
+expenses_lock,What happens to expenses when you lock timesheets?,(?i)lock date.*expenses.*won't be able to add or edit,https://clockify.me/help/track-time-and-expenses/lock-timesheets

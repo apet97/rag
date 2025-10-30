@@ -1,0 +1,101 @@
+# Pre-commit hooks configuration for RAG system
+# Install with: pre-commit install
+# Run manually: pre-commit run --all-files
+
+repos:
+  # Code formatting with Black
+  - repo: https://github.com/psf/black
+    rev: 23.11.0
+    hooks:
+      - id: black
+        language_version: python3
+        args: ['--line-length=100']
+
+  # Import sorting with isort
+  - repo: https://github.com/PyCQA/isort
+    rev: 5.13.0
+    hooks:
+      - id: isort
+        args: ['--profile=black', '--line-length=100']
+
+  # Linting with flake8
+  - repo: https://github.com/PyCQA/flake8
+    rev: 6.1.0
+    hooks:
+      - id: flake8
+        args: ['--max-line-length=100', '--ignore=E203,W503']
+        exclude: ^(tests/|.venv/)
+
+  # Type checking with mypy
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.7.0
+    hooks:
+      - id: mypy
+        args: ['--config-file=mypy.ini', '--cache-dir=.mypy_cache']
+        additional_dependencies:
+          - pydantic>=2.0
+          - types-requests
+          - types-setuptools
+        exclude: ^(tests/|setup.py)
+
+  # YAML validation
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: check-yaml
+      - id: check-json
+      - id: check-added-large-files
+      - id: check-case-conflict
+      - id: check-merge-conflict
+      - id: debug-statements
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+        args: [--markdown-template='{original}']
+
+  # Docstring coverage with docformatter
+  - repo: https://github.com/PyCQA/docformatter
+    rev: v1.7.5
+    hooks:
+      - id: docformatter
+        args: ['--in-place', '--line-length=100']
+
+  # Security checks with bandit
+  - repo: https://github.com/PyCQA/bandit
+    rev: 1.7.5
+    hooks:
+      - id: bandit
+        args: ['-c', '.bandit']
+        exclude: ^(tests/|.venv/)
+  - repo: https://github.com/pypa/pip-audit
+    rev: v2.7.2
+    hooks:
+      - id: pip-audit
+        args: ['-s','low']
+  - repo: https://github.com/zricethezav/pre-commit-gitleaks
+    rev: v8.18.1
+    hooks:
+      - id: gitleaks
+
+  # Pylint for advanced linting
+  - repo: https://github.com/pylint-dev/pylint
+    rev: pylint-3.0.0a1
+    hooks:
+      - id: pylint
+        args: ['--rcfile=.pylintrc', '--fail-under=8.0']
+        exclude: ^(tests/|.venv/|setup.py)
+        additional_dependencies: ['pydantic', 'fastapi', 'numpy', 'loguru']
+
+# Configuration
+default_language_version:
+  python: python3.10
+
+ci:
+  autofix_commit_msg: 'chore: auto fixes from pre-commit hooks'
+  autofix_prs: true
+  autoupdate_branch: ''
+  autoupdate_commit_msg: 'chore: pre-commit autoupdate'
+  autoupdate_schedule: weekly
+  skip: [pylint]  # Pylint can be slow in CI
+  stages: [commit]
+  
+  
