@@ -1,0 +1,23 @@
+name: Large files check
+on: [pull_request]
+jobs:
+  block-large-files:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - name: Block files > 50MB
+        run: |
+          THRESHOLD=$((50*1024*1024))
+          git fetch origin main
+          git diff --name-only --diff-filter=AM origin/main...HEAD | while read f; do
+            [ -f "$f" ] || continue
+            if command -v stat >/dev/null 2>&1; then
+              s=$(stat -c%s "$f" 2>/dev/null || stat -f%z "$f" 2>/dev/null || echo 0)
+            else
+              s=0
+            fi
+            if [ "$s" -gt "$THRESHOLD" ]; then
+              echo "❌ $f is larger than 50MB"; exit 1
+            fi
+          done
