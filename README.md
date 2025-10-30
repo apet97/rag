@@ -1,3 +1,4 @@
+[![CI](https://github.com/apet97/rag/actions/workflows/rag_corpus_ci.yml/badge.svg)](https://github.com/apet97/rag/actions)
 # Advanced Multi-Corpus RAG Stack
 
 Local, production-ready retrieval-augmented generation system for Clockify Help + LangChain docs. Zero cloud services, full control, state-of-the-art retrieval.
