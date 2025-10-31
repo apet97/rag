@@ -356,7 +356,7 @@ Configuration and customization options are available in your account settings.
                             return None
 
                     logger.debug(f"LLM response: {answer[:100]}...")
-                    return answer
+                    return cast(Optional[str], answer)
                 else:
                     logger.warning(f"LLM returned status {response.status_code}")
                     if attempt < self.max_retries - 1:
