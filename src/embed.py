@@ -68,7 +68,7 @@ class EmbeddingBuilder:
 
         # Embed with E5 prompt format for passages
         texts: List[str] = [c.get("text", "") for c in chunks]
-        embeddings_list: List[__import__("numpy").ndarray] = []
+        embeddings_list: List[np.ndarray] = []
 
         for i in range(0, len(texts), BATCH_SIZE):
             batch = texts[i : i + BATCH_SIZE]
