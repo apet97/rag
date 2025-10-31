@@ -274,7 +274,7 @@ class LLMClient:
                             response=resp,
                         )
                     resp.raise_for_status()
-                    return resp.text
+                    return str(resp.text)
                 except (httpx.TimeoutException, httpx.ConnectError) as e:
                     # Retry on network timeouts and connection errors (transient)
                     last_error = e
@@ -442,5 +442,5 @@ class LLMClient:
                 raise RuntimeError(f"Unsupported LLM_API_TYPE: {self.api_type}")
 
         # Execute with circuit breaker protection
-        return self.circuit_breaker.call(_chat_protected)
-
+        from typing import cast
+        return cast(str, self.circuit_breaker.call(_chat_protected))

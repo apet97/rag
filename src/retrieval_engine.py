@@ -639,7 +639,7 @@ class HybridSearchStrategy(BaseRetrievalStrategy):
             Results with time-decayed scores
         """
         from datetime import datetime
-        import pytz
+        import pytz  # type: ignore[import-untyped]
 
         start_time = time.time()
         tracker = get_performance_tracker()
