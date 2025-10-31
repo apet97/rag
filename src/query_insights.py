@@ -34,7 +34,7 @@ class QueryInsight:
     time_decay_applied: bool = False
     cache_hit: bool = False
     timestamp: float = 0.0
-    metadata: Dict[str, Any] = None
+    metadata: Optional[Dict[str, Any]] = None
 
     def __post_init__(self):
         if self.metadata is None:

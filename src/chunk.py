@@ -43,9 +43,9 @@ class ParentChildChunker:
     @staticmethod
     def split_by_headers(text: str) -> List[tuple[str, int]]:
         """Split by H2/H3 boundaries into sections."""
-        sections = []
-        current = []
-        depth = 0
+        sections: List[tuple[str, int]] = []
+        current: List[str] = []
+        depth: int = 0
 
         for line in text.split("\n"):
             if re.match(r"^##\s", line):
@@ -74,10 +74,9 @@ class ParentChildChunker:
         if TokenCounter.count(text) <= target:
             return [text]
 
-        chunks = []
-        words = text.split()
-        current = []
-        overlap_buf = []
+        chunks: List[str] = []
+        words: List[str] = text.split()
+        current: List[str] = []
 
         for i, word in enumerate(words):
             current.append(word)
@@ -86,7 +85,7 @@ class ParentChildChunker:
                 chunks.append(chunk_text)
 
                 # Overlap
-                overlap_words = []
+                overlap_words: List[str] = []
                 for w in reversed(current):
                     overlap_words.insert(0, w)
                     if TokenCounter.count(" ".join(overlap_words)) >= overlap:
