@@ -1,9 +1,9 @@
 # Push Report
 
 - Repo: https://github.com/apet97/rag
-- Branch pushed: main
+- Branch pushed: main @ c4252339d875efc1a08152dea727206ae8239654
 - Tag pushed: v3.0.0
-- CI: green (PRs #3, #4, #5 merged)
+- CI status: completed:success
 - Release: https://github.com/apet97/rag/releases/tag/v3.0.0
 
 ## Artifacts
