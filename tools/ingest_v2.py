@@ -15,6 +15,7 @@ Outputs:
   - codex/INGEST_FAILED_v2.txt
   - index/faiss/<namespace>/index.bin, meta.json, stats.json
 """
+import sys
 
 import json
 import os
@@ -28,7 +29,6 @@ from loguru import logger
 
 os.environ.setdefault("PYTHONUTF8", "1")
 
-import sys
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
@@ -190,7 +190,7 @@ def main() -> None:
             })
 
     # Embed
-    from src.embeddings import embed_passages, EMBEDDING_MODEL, EMBEDDING_DIM
+    from src.embeddings import embed_passages, EMBEDDING_MODEL
     texts = [d["text"] for d in docs]
     try:
         embeddings = embed_passages(texts)

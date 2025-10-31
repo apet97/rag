@@ -16,6 +16,15 @@ exclude = [
     "build",
     "dist",
     ".venv",
+    "tests",
+    "eval",
+    "scripts",
+    "codex",
+    "data",
+    "ui",
+    "docs",
+    "public",
+    "code_md",
 ]
 
 [tool.mypy]
