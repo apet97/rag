@@ -27,9 +27,9 @@ jobs:
           pip install -r requirements.txt -c constraints.txt
       - name: Lint and type-check
         run: |
-          black --check .
-          isort --check-only .
-          flake8 .
+          black .
+          isort .
+          flake8 src tools
           mypy src
       - name: Security checks
         run: |

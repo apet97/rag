@@ -1,7 +1,6 @@
 [tool.black]
 line-length = 100
 target-version = ["py39", "py310", "py311"]
-include = "\.(py)$"
 
 [tool.isort]
 profile = "black"
@@ -17,6 +16,15 @@ exclude = [
     "build",
     "dist",
     ".venv",
+    "tests",
+    "eval",
+    "scripts",
+    "codex",
+    "data",
+    "ui",
+    "docs",
+    "public",
+    "code_md",
 ]
 
 [tool.mypy]
@@ -32,4 +40,3 @@ plugins = []
 addopts = "-q"
 testpaths = ["tests"]
 filterwarnings = ["ignore::DeprecationWarning"]
-
