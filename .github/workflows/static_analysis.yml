@@ -25,4 +25,5 @@ jobs:
         run: |
           # Focused strict typing on a subset we can reasonably keep green
           mypy --no-incremental --ignore-missing-imports \
-               src/llm/local_client.py src/metrics.py
+               src/llm/local_client.py src/metrics.py \
+               src/chunk.py src/query_insights.py
