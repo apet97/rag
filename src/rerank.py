@@ -8,17 +8,22 @@ Never block retrieval on reranker availability.
 """
 
 import os
-from typing import Optional, List, Dict, Any
+from typing import Optional, List, Dict, Any, Protocol, Sequence, Tuple, TYPE_CHECKING
 
 from loguru import logger
 
 try:
-    from FlagEmbedding import FlagReranker
+    from FlagEmbedding import FlagReranker as _FlagReranker  # type: ignore
     RERANK_AVAILABLE = True
-except ImportError:
+except Exception:
     RERANK_AVAILABLE = False
-    FlagReranker = None  # type: ignore
+    _FlagReranker = None  # type: ignore
     logger.debug("FlagEmbedding not installed. Reranking disabled. Install with: pip install FlagEmbedding")
+
+
+class _RerankerProto(Protocol):
+    def compute_score(self, pairs: Sequence[Tuple[str, str]], *, normalize: bool = ...) -> List[float]:
+        ...
 
 # Environment-based reranker control: disable in CI or when explicitly requested
 RERANK_DISABLED = (
@@ -26,7 +31,7 @@ RERANK_DISABLED = (
     or os.getenv("EMBEDDINGS_BACKEND") == "stub"  # Auto-disable for stub backend
 )
 
-_reranker: Optional[object] = None
+_reranker: Optional[_RerankerProto] = None
 
 
 def _get_reranker() -> Optional[object]:
@@ -40,7 +45,8 @@ def _get_reranker() -> Optional[object]:
     if _reranker is None:
         try:
             logger.info("Loading reranker model: BAAI/bge-reranker-base")
-            _reranker = FlagReranker("BAAI/bge-reranker-base", use_fp16=False)
+            _rr = _FlagReranker("BAAI/bge-reranker-base", use_fp16=False)  # type: ignore[operator]
+            _reranker = _rr  # type: ignore[assignment]
             logger.info("Reranker loaded successfully")
         except Exception as e:
             logger.warning(f"Failed to load reranker: {e}. Continuing without reranking.")
