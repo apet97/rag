@@ -6,7 +6,7 @@ import json
 import time
 import logging
 import os
-from typing import Optional, List, Dict, Any
+from typing import Optional, List, Dict, Any, cast
 from pathlib import Path
 
 from src.llm.harmony_encoder import get_harmony_encoder
@@ -120,7 +120,7 @@ class LocalLLMClient:
                 json={"model": self.model_name, "messages": [{"role": "user", "content": "OK"}], "max_tokens": 5},
                 timeout=5,
             )
-            return response.status_code == 200
+            return bool(response.status_code == 200)  # type: ignore[no-any-return]
         except Exception:
             return False
 
