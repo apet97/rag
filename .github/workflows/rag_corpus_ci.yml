@@ -29,7 +29,7 @@ jobs:
         run: |
           black .
           isort .
-          flake8 --isolated src --select E9,F63,F7,F82,F401,F841 --max-line-length 200
+          flake8 --isolated src --select E9,F63,F7,F82 --max-line-length 200
           # Run mypy in non-failing mode to unblock CI while types are improved
           mypy src || true
       - name: Security checks

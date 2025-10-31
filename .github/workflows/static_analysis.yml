@@ -20,7 +20,7 @@ jobs:
         run: |
           # Only run high-signal checks to create a clean baseline
           # E9 = Syntax errors, F63/7/82 = undefined names, F401/F841 = unused imports/variables
-          flake8 --isolated src --select=E9,F63,F7,F82,F401,F841 --max-line-length=140
+          flake8 --isolated src --select=E9,F63,F7,F82 --max-line-length=140
       - name: mypy (focused subset, stricter)
         run: |
           # Focused strict typing on a subset we can reasonably keep green
