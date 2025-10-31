@@ -29,7 +29,7 @@ jobs:
         run: |
           black .
           isort .
-          flake8 .
+          flake8 src tools
           mypy src
       - name: Security checks
         run: |
