@@ -5,6 +5,8 @@ Local, production-ready retrieval-augmented generation system for Clockify Help 
 
 > **📚 For Developers**: See [HANDOFF.md](HANDOFF.md) for comprehensive system documentation, architecture details, configuration deep-dive, file structure guide, and handoff instructions. This is your one-stop reference for understanding the entire system.
 
+> **🤝 Handoff for Next AI**: See `codex/HANDOFF_NEXT_AI.md` for an operational handoff: environment, ingestion v2, indexes, CI and branch protection, quality gates, and day-2 ops. This is the fastest path to pick up and ship.
+
 **Latest Updates (2025-10-30)**:
 - ✅ Fixed critical answerability bug (context truncation mismatch)
 - ✅ Increased context window 4.8x (2K → 9.6K characters)
