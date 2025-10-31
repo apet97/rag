@@ -24,11 +24,7 @@ import time
 
 from loguru import logger
 
-# Import for LLM fallback and query type detection
-try:
-    from src.llm_client import LLMClient
-except ImportError:
-    LLMClient = None
+# Import for query type detection (optional); LLMClient imported lazily in fallback
 
 try:
     from src.search_improvements import detect_query_type
@@ -280,7 +276,10 @@ def _llm_decompose_fallback(
     Returns:
         List of sub-question strings if successful, None otherwise
     """
-    if LLMClient is None:
+    # Import LLMClient lazily to avoid hard dependency during type checking and offline mode
+    try:
+        from src.llm_client import LLMClient  # type: ignore
+    except Exception:
         logger.debug("LLMClient not available for decomposition fallback")
         return None
 

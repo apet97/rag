@@ -187,7 +187,10 @@ GENERAL_CONFIDENCE_BOOST: float = 0.5
 # ============================================================================
 
 
-def get_boost_factors(query_type: str) -> dict:
+from typing import Dict, cast
+
+
+def get_boost_factors(query_type: str) -> dict[str, float]:
     """
     Get boost factors for a query type.
 
@@ -197,7 +200,7 @@ def get_boost_factors(query_type: str) -> dict:
     Returns:
         Dictionary of boost factors for that query type
     """
-    return QUERY_BOOST_FACTORS.get(query_type, QUERY_BOOST_FACTORS["general"])
+    return cast(Dict[str, float], QUERY_BOOST_FACTORS.get(query_type, QUERY_BOOST_FACTORS["general"]))
 
 
 def get_rrf_score(vector_rank: int, bm25_rank: int) -> float:
@@ -247,4 +250,4 @@ def get_time_decay_factor(days_old: float) -> float:
         Decay factor (0-1) to multiply with score
     """
     months_old = days_old / TIME_DECAY_MONTHS_DIVISOR
-    return TIME_DECAY_RATE ** months_old
+    return float(TIME_DECAY_RATE ** months_old)

@@ -47,8 +47,8 @@ def _element_to_text(el: Tag) -> str:
                 rows.append(" | ".join(cells))
         return "\n".join(rows)
     if name == "pre":
-        return el.get_text("\n", strip=True)
-    return el.get_text(" ", strip=True)
+        return str(el.get_text("\n", strip=True))
+    return str(el.get_text(" ", strip=True))
 
 
 def _breadcrumb_to_str(breadcrumb: str | list | tuple | None) -> str:
