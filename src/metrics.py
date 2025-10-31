@@ -108,7 +108,7 @@ llm_latency = Histogram(
 llm_tokens = Histogram(
     'rag_llm_tokens_total',
     'Estimated LLM tokens per request',
-    ['model', 'type'],  # type: input or output
+    ['model', 'type'],  # note: metric label 'type' denotes input vs output
     buckets=(50, 100, 250, 500, 1000, 2000, 4000, 8000)
 )
 

@@ -48,13 +48,22 @@ def normalize_model_name(model_name: str) -> str:
 class LocalLLMClient:
     """Client for Ollama or OpenAI-compatible LLM endpoint with optional mock mode."""
 
+    # Declare attributes for type checkers
+    base_url: str
+    model_name: str
+    timeout: int
+    max_retries: int
+    api_type: str
+    endpoint: str
+    mock_mode: bool
+
     def __init__(
         self,
-        base_url: str = None,
+        base_url: Optional[str] = None,
         model_name: str = "oss20b",
         timeout: int = 60,
         max_retries: int = 3,
-        mock_mode: bool = None,
+        mock_mode: Optional[bool] = None,
         api_type: str = "ollama",  # "ollama" or "openai"
     ):
         """Initialize LLM client.
@@ -392,10 +401,10 @@ Configuration and customization options are available in your account settings.
         """
         if self.mock_mode:
             # For mock mode, yield the response in chunks
-            response = self._generate_mock_response(system_prompt, user_prompt)
+            mock_text = self._generate_mock_response(system_prompt, user_prompt)
             # Yield in ~50 character chunks to simulate streaming
-            for i in range(0, len(response), 50):
-                yield response[i:i + 50]
+            for i in range(0, len(mock_text), 50):
+                yield mock_text[i:i + 50]
             return
 
         messages = [
@@ -445,10 +454,10 @@ _client: Optional[LocalLLMClient] = None
 
 
 def get_llm_client(
-    base_url: str = None,
-    model_name: str = None,
-    mock_mode: bool = None,
-    api_type: str = None,
+    base_url: Optional[str] = None,
+    model_name: Optional[str] = None,
+    mock_mode: Optional[bool] = None,
+    api_type: Optional[str] = None,
 ) -> LocalLLMClient:
     """Get or create singleton LLM client.
 
