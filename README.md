@@ -7,6 +7,8 @@ Local, production-ready retrieval-augmented generation system for Clockify Help 
 
 > **🤝 Handoff for Next AI**: See `codex/HANDOFF_NEXT_AI.md` for an operational handoff: environment, ingestion v2, indexes, CI and branch protection, quality gates, and day-2 ops. This is the fastest path to pick up and ship.
 
+> **🛠 Improvement Plan**: See `codex/IMPROVEMENT_PLAN.md` for a prioritized roadmap (typing/lint, tests, retrieval tuning, and ops monitoring).
+
 **Latest Updates (2025-10-30)**:
 - ✅ Fixed critical answerability bug (context truncation mismatch)
 - ✅ Increased context window 4.8x (2K → 9.6K characters)
