@@ -41,6 +41,7 @@ from src.errors import CircuitOpenError
 from src.index_manager import IndexManager, NamespaceIndex
 from src.performance_tracker import get_performance_tracker
 from src.prompt import RAGPrompt
+from src.semantic_cache import get_semantic_cache
 
 # Allow/Deny patterns for runtime enforcement
 _ALLOWLIST_PATH = str(CFG.ALLOWLIST_PATH)
