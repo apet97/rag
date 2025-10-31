@@ -5,7 +5,7 @@ import json
 import logging
 import numpy as np
 from pathlib import Path
-from typing import Dict, Any
+from typing import Dict, Any, List
 import os
 from dotenv import load_dotenv
 
@@ -67,29 +67,29 @@ class EmbeddingBuilder:
         logger.info(f"Building index for {namespace}: {len(chunks)} chunks")
 
         # Embed with E5 prompt format for passages
-        texts = [c["text"] for c in chunks]
-        embeddings = []
+        texts: List[str] = [c.get("text", "") for c in chunks]
+        embeddings_list: List[__import__("numpy").ndarray] = []
 
         for i in range(0, len(texts), BATCH_SIZE):
             batch = texts[i : i + BATCH_SIZE]
             # E5 format: prefix each passage with "passage: "
             batch_with_prefix = [f"passage: {text}" for text in batch]
             batch_emb = self.model.encode(batch_with_prefix, convert_to_numpy=True)
-            embeddings.append(batch_emb)
+            embeddings_list.append(batch_emb)
             if (i + BATCH_SIZE) % (BATCH_SIZE * 10) == 0:
                 logger.info(f"  → {min(i + BATCH_SIZE, len(texts))}/{len(texts)}")
 
-        embeddings = np.vstack(embeddings)
-        logger.info(f"✓ Generated {embeddings.shape[0]} embeddings (dim={embeddings.shape[1]})")
+        stacked = np.vstack(embeddings_list)
+        logger.info(f"✓ Generated {stacked.shape[0]} embeddings (dim={stacked.shape[1]})")
 
         # L2-normalize for cosine similarity with inner product
-        embeddings = embeddings / (np.linalg.norm(embeddings, axis=1, keepdims=True) + 1e-12)
-        embeddings = embeddings.astype(np.float32)
+        stacked = stacked / (np.linalg.norm(stacked, axis=1, keepdims=True) + 1e-12)
+        stacked = stacked.astype(np.float32)
 
         # Build index
-        dim = embeddings.shape[1]
+        dim = stacked.shape[1]
         index = faiss.IndexFlatIP(dim)
-        index.add(embeddings)
+        index.add(stacked)
         logger.info(f"✓ Index built: {index.ntotal} vectors")
 
         # Save
