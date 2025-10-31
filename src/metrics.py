@@ -10,7 +10,7 @@ Provides counters, histograms, and gauges for tracking:
 """
 
 from prometheus_client import Counter, Histogram, Gauge, generate_latest, CONTENT_TYPE_LATEST
-from typing import Optional
+from typing import Optional, cast
 
 # ============================================================================
 # HTTP Request Metrics
@@ -278,7 +278,7 @@ def get_metrics() -> bytes:
     Returns:
         Prometheus-formatted metrics as bytes
     """
-    return generate_latest()
+    return cast(bytes, generate_latest())
 
 
 def get_content_type() -> str:
@@ -288,4 +288,4 @@ def get_content_type() -> str:
     Returns:
         Content-Type header value
     """
-    return CONTENT_TYPE_LATEST
+    return cast(str, CONTENT_TYPE_LATEST)
