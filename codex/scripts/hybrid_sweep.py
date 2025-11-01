@@ -61,7 +61,19 @@ def main() -> None:
     args = ap.parse_args()
 
     if not os.path.exists(args.eval):
-        print(f"No eval set at {args.eval}. Skipping.")
+        # Write placeholder report even when eval is missing
+        header = [
+            "# Hybrid Tuning",
+            "",
+            f"- Namespace: {args.namespace}",
+            f"- Index root: {args.index_root}",
+            f"- Eval: missing at {args.eval}",
+            "",
+            "Evaluation set not found. Provide codex/RAG_EVAL_TASKS.jsonl and re-run.",
+        ]
+        with open(args.out, "w", encoding="utf-8") as f:
+            f.write("\n".join(header))
+        print(f"Wrote placeholder tuning report to {args.out}")
         return
 
     weights = [0.20, 0.35, 0.50]
@@ -105,4 +117,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-
