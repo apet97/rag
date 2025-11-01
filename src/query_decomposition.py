@@ -96,7 +96,7 @@ def _load_glossary() -> dict:
     path = Path("data/domain/glossary.json")
     if path.exists():
         try:
-            return json.loads(path.read_text(encoding="utf-8"))
+            return json.loads(path.read_text(encoding="utf-8"))  # type: ignore[no-any-return]
         except Exception as e:
             logger.warning(f"Failed to load glossary for decomposition: {e}")
             return {}

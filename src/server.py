@@ -364,11 +364,6 @@ def _filter_and_refill_for_test(hits: List[Dict[str, Any]], candidates: List[Dic
                 filtered.append(cand)
     return filtered[:max_context]
 
-    # Add request ID to response headers for tracing
-    response.headers["X-Request-ID"] = request_id
-
-    return response
-
 # FIX CRITICAL #3: CORS middleware with explicit origins (no wildcards)
 # Using configurable CORS_ALLOWED_ORIGINS from environment
 # allow_credentials=True is only safe because origins are explicitly restricted

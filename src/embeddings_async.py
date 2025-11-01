@@ -13,7 +13,7 @@ from __future__ import annotations
 import os
 import asyncio
 import logging
-from typing import List, Optional, Tuple
+from typing import List, Optional, Tuple, Callable
 from functools import lru_cache
 from urllib.parse import urljoin
 
@@ -287,7 +287,7 @@ class AsyncEmbeddingClient:
     async def embed_with_fallback(
         self,
         texts: List[str],
-        fallback_fn: Optional[callable] = None,
+        fallback_fn: Optional[Callable[[List[str]], np.ndarray]] = None,
     ) -> np.ndarray:
         """
         Embed texts with fallback function if async fails.
@@ -306,7 +306,7 @@ class AsyncEmbeddingClient:
         except Exception as e:
             logger.warning(f"Async embedding failed, using fallback: {e}")
 
-            if fallback_fn:
+            if fallback_fn is not None:
                 return fallback_fn(texts)
             else:
                 raise
