@@ -12,13 +12,19 @@ source .venv/bin/activate
 python3 -m pip install --upgrade pip >/dev/null
 if ! pip install -r requirements.txt -c constraints.txt >/dev/null; then
   echo "Primary dependency install failed; attempting compatibility install for numpy/faiss..."
-  # Preseed core wheels to help resolver on macOS
-  pip install --only-binary=:all: numpy==1.26.4 >/dev/null || true
-  pip install --only-binary=:all: --no-deps faiss-cpu==1.7.4 >/dev/null || true
-  # Install the rest excluding faiss/numpy
+  # Try platform-compatible latest wheels for numpy and faiss-cpu
+  if ! pip install --no-deps 'numpy>=2.1' >/dev/null; then
+    echo "Note: falling back to pip's best numpy wheel without pin..."
+    pip install --no-deps numpy >/dev/null || true
+  fi
+  if ! pip install --no-deps 'faiss-cpu>=1.11.0' >/dev/null; then
+    echo "Note: falling back to pip's best faiss-cpu wheel without pin..."
+    pip install --no-deps faiss-cpu >/dev/null || true
+  fi
+  # Install the rest excluding faiss/numpy to avoid resolver downgrades
   TMP_REQS=$(mktemp)
   grep -v -E '^(faiss-cpu|numpy)=' requirements.txt > "$TMP_REQS"
-  pip install -r "$TMP_REQS" -c constraints.txt >/dev/null
+  pip install -r "$TMP_REQS" -c constraints.txt >/dev/null || pip install -r "$TMP_REQS" >/dev/null
 fi
 
 echo "[2/5] Preparing logs directory (structured JSONL at logs/retrieval_metrics.log)..."
