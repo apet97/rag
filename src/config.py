@@ -83,6 +83,7 @@ def health_summary() -> dict:
 class _Compat:
     MAX_CONTEXT_CHUNKS: int = int(_get_env("MAX_CONTEXT_CHUNKS", "8"))
     CONTEXT_CHAR_LIMIT: int = int(_get_env("CONTEXT_CHAR_LIMIT", "1200"))
+    ANSWERABILITY_THRESHOLD: float = _parse_float("ANSWERABILITY_THRESHOLD", 0.18)
 
 
 CONFIG = _Compat()
