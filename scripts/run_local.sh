@@ -10,7 +10,16 @@ if [[ ! -d .venv ]]; then
 fi
 source .venv/bin/activate
 python3 -m pip install --upgrade pip >/dev/null
-pip install -r requirements.txt -c constraints.txt >/dev/null
+if ! pip install -r requirements.txt -c constraints.txt >/dev/null; then
+  echo "Primary dependency install failed; attempting compatibility install for numpy/faiss..."
+  # Preseed core wheels to help resolver on macOS
+  pip install --only-binary=:all: numpy==1.26.4 >/dev/null || true
+  pip install --only-binary=:all: --no-deps faiss-cpu==1.7.4 >/dev/null || true
+  # Install the rest excluding faiss/numpy
+  TMP_REQS=$(mktemp)
+  grep -v -E '^(faiss-cpu|numpy)=' requirements.txt > "$TMP_REQS"
+  pip install -r "$TMP_REQS" -c constraints.txt >/dev/null
+fi
 
 echo "[2/5] Preparing logs directory (structured JSONL at logs/retrieval_metrics.log)..."
 mkdir -p logs
