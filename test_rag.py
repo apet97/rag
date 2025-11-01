@@ -21,6 +21,7 @@ from src.index_manager import IndexManager
 from src.embeddings import embed_query, get_embedder
 from src.config import NAMESPACE, INDEX_ROOT, NAMESPACES
 import numpy as np
+import faiss
 
 
 def test_search(query: str, k: int = 5):
@@ -54,7 +55,10 @@ def test_search(query: str, k: int = 5):
     print("🔍 Embedding query...")
     try:
         query_vec = embed_query(query)
-        print(f"✓ Query embedded (dimension={len(query_vec)})")
+        # Convert to numpy array if needed
+        if not isinstance(query_vec, np.ndarray):
+            query_vec = np.array(query_vec, dtype=np.float32)
+        print(f"✓ Query embedded (dimension={query_vec.shape})")
         print()
     except Exception as e:
         print(f"❌ Embedding failed: {e}")
@@ -70,15 +74,17 @@ def test_search(query: str, k: int = 5):
         faiss_index = idx_data["index"]
         metadata = idx_data["metas"]
 
-        # Prepare query vector for FAISS (needs 2D array)
-        query_vec_2d = np.array([query_vec], dtype=np.float32)
+        # Prepare query vector for FAISS (needs 2D array: shape (1, dim))
+        if query_vec.ndim == 1:
+            query_vec_2d = query_vec.reshape(1, -1).astype(np.float32)
+        else:
+            query_vec_2d = query_vec.astype(np.float32)
 
         # Normalize if index is normalized
         if mgr.is_normalized(namespace):
             faiss.normalize_L2(query_vec_2d)
 
         # Search FAISS index
-        import faiss
         scores, indices = faiss_index.search(query_vec_2d, k)
 
         # Build results with metadata
@@ -152,12 +158,15 @@ def test_chat(query: str):
     # Search first
     print("🔍 Step 1: Retrieving relevant documents...")
     try:
-        import faiss
         embedder = get_embedder()
         mgr = IndexManager(INDEX_ROOT, NAMESPACES)
         mgr.ensure_loaded()
 
         query_vec = embed_query(query)
+        # Convert to numpy array if needed
+        if not isinstance(query_vec, np.ndarray):
+            query_vec = np.array(query_vec, dtype=np.float32)
+
         namespace = NAMESPACES[0]
 
         # Get FAISS index and metadata
@@ -165,8 +174,11 @@ def test_chat(query: str):
         faiss_index = idx_data["index"]
         metadata = idx_data["metas"]
 
-        # Prepare query vector for FAISS (needs 2D array)
-        query_vec_2d = np.array([query_vec], dtype=np.float32)
+        # Prepare query vector for FAISS (needs 2D array: shape (1, dim))
+        if query_vec.ndim == 1:
+            query_vec_2d = query_vec.reshape(1, -1).astype(np.float32)
+        else:
+            query_vec_2d = query_vec.astype(np.float32)
 
         # Normalize if index is normalized
         if mgr.is_normalized(namespace):
