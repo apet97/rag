@@ -32,6 +32,31 @@ curl -H 'x-api-token: change-me' 'http://localhost:7001/search?q=create%20projec
 
 Full offline guide: `codex/RUN_ON_COMPANY_LAPTOP.md`.
 
+## Company Laptop Quickstart (VPN)
+
+On VPN, use the internal LLM at `http://10.127.0.192:11434` and build a real-embedding index.
+
+```bash
+python3 -m venv .venv && source .venv/bin/activate
+python3 -m pip install --upgrade pip
+pip install -r requirements.txt -c constraints.txt
+
+cp .env.example .env
+# Edit .env → set LLM_BASE_URL=http://10.127.0.192:11434, LLM_MODEL=gpt-oss:20b, API_TOKEN=<your-token>
+
+# Build real index (MiniLM, dim=384)
+export EMBEDDINGS_BACKEND=real
+export EMBEDDING_MODEL=sentence-transformers/all-MiniLM-L6-v2
+export EMBEDDING_DIM=384
+export NAMESPACE=clockify
+export CHUNK_STRATEGY=url_level
+python3 tools/ingest_v2.py
+
+uvicorn src.server:app --host 0.0.0.0 --port 7001
+```
+
+VPN runbook: `codex/RUN_ON_VPN.md`.
+
 **Latest Updates (2025-10-30)**:
 - ✅ Fixed critical answerability bug (context truncation mismatch)
 - ✅ Increased context window 4.8x (2K → 9.6K characters)
