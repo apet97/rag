@@ -204,7 +204,7 @@ def should_enable_hybrid_search(query_type: str, query_length: int) -> bool:
     return True
 
 
-def log_query_analysis(query: str, query_type: str, adaptive_k: int):
+def log_query_analysis(query: str, query_type: str, adaptive_k: int) -> None:
     """Log query analysis for debugging and optimization."""
     logger.debug(
         f"Query analysis: type={query_type}, adaptive_k={adaptive_k}, "

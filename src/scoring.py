@@ -20,7 +20,7 @@ class ConfidenceScorer:
     CONFIDENCE_THRESHOLD_MEDIUM = 50  # 50-75 = Medium confidence (yellow)
     # < 50 = Low confidence (red)
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize scorer."""
         self.scoring_history = []
 
