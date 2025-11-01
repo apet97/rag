@@ -339,6 +339,31 @@ async def log_requests(request: Request, call_next):
         f"status={response.status_code} duration={duration:.3f}s"
     )
 
+def _filter_and_refill_for_test(hits: List[Dict[str, Any]], candidates: List[Dict[str, Any]], max_context: int) -> List[Dict[str, Any]]:
+    """Testing helper: enforce allowlist/denylist on hits and refill from candidates.
+
+    Mirrors the logic used inside chat() to filter hits by _is_allowed and then
+    refill from remaining candidates to maintain context size when possible.
+
+    Args:
+        hits: Top-ranked unique results
+        candidates: Full candidate list (ranked)
+        max_context: Desired maximum number of sources to return
+
+    Returns:
+        List of filtered sources up to max_context in rank order
+    """
+    # Enforce allowlist
+    filtered: List[Dict[str, Any]] = [h for h in hits if _is_allowed(h.get("url", ""))]
+    # Refill to maintain context size if possible
+    if len(filtered) < max_context:
+        for cand in candidates:
+            if len(filtered) >= max_context:
+                break
+            if cand not in filtered and _is_allowed(cand.get("url", "")):
+                filtered.append(cand)
+    return filtered[:max_context]
+
     # Add request ID to response headers for tracing
     response.headers["X-Request-ID"] = request_id
 
