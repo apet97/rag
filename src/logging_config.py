@@ -7,7 +7,6 @@ Provides unified logging across all modules using loguru.
 Supports both console and file output with structured logging.
 """
 
-import os
 import sys
 import json
 from datetime import datetime

@@ -6,7 +6,6 @@ parameter quoting, and consistent citation format across channels.
 """
 
 from typing import List, Dict, Any, Optional
-import re
 
 from src.config import CONFIG
 

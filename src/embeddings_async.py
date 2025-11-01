@@ -12,7 +12,6 @@ from __future__ import annotations
 
 import os
 import asyncio
-import logging
 from typing import List, Optional, Tuple, Callable
 from functools import lru_cache
 from urllib.parse import urljoin

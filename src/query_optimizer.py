@@ -6,7 +6,7 @@ Analyzes queries to extract intent, entities, and generates optimized search ter
 """
 
 import re
-from typing import Dict, List, Tuple, Optional
+from typing import Dict, List
 from enum import Enum
 import logging
 

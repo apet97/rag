@@ -2,7 +2,6 @@
 from __future__ import annotations
 import re
 import pathlib
-from typing import Any
 
 
 # Curated Clockify terms and their canonical aliases

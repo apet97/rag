@@ -14,7 +14,7 @@ Backend: In-memory LRU (10k entries max)
 import hashlib
 import time
 import threading
-from typing import Optional, Dict, List, Any, Tuple
+from typing import Optional, Dict, List, Any
 from collections import OrderedDict
 import numpy as np
 from loguru import logger

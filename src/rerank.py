@@ -8,7 +8,7 @@ Never block retrieval on reranker availability.
 """
 
 import os
-from typing import Optional, List, Dict, Any, Protocol, Sequence, Tuple, TYPE_CHECKING
+from typing import Optional, List, Dict, Any, Protocol, Sequence, Tuple
 
 from loguru import logger
 

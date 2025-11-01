@@ -6,7 +6,7 @@ import logging
 import re
 import hashlib
 from pathlib import Path
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Any
 import os
 from dotenv import load_dotenv
 
@@ -184,21 +184,7 @@ class ChunkProcessor:
                         if not parent_title_path:
                             parent_title_path = [title]
 
-                    parent = {
-                        "id": self.parent_id,
-                        "url": url,
-                        "namespace": namespace,
-                        "title": title,
-                        "headers": section_headers,
-                        "section_index": sec_idx,
-                        "text": section_text,
-                        "tokens": TokenCounter.count(section_text),
-                        "section": section_title,
-                        "anchor": anchor,
-                        "breadcrumb": breadcrumb,
-                        "updated_at": updated_at,
-                        "title_path": parent_title_path,
-                    }
+                    # Parent metadata computed but not stored in this path
 
                     parent_id = self.parent_id
                     self.parent_id += 1
@@ -259,17 +245,6 @@ class ChunkProcessor:
             chunks_created = []
 
             for sec_idx, (sec_text, _) in enumerate(sections):
-                parent_tokens = TokenCounter.count(sec_text)
-                parent = {
-                    "id": self.parent_id,
-                    "url": url,
-                    "namespace": namespace,
-                    "title": title,
-                    "headers": headers,
-                    "section_index": sec_idx,
-                    "text": sec_text,
-                    "tokens": parent_tokens,
-                }
 
                 parent_id = self.parent_id
                 self.parent_id += 1
@@ -340,7 +315,7 @@ async def main():
             logger.info(f"Found {len(md_files)} files in {ns_dir.name}")
 
             for md_file in sorted(md_files):
-                chunks = processor.process_file(md_file, ns_dir.name)
+                _ = processor.process_file(md_file, ns_dir.name)
                 namespaces.add(ns_dir.name)
 
     for ns in namespaces:

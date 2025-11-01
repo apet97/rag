@@ -12,7 +12,7 @@ Provides synchronous embedding operations with:
 import os
 import threading
 import numpy as np
-from typing import Optional, List, Dict, Any, Union
+from typing import Optional, List, Dict, Any
 from loguru import logger
 
 # Backend selection

@@ -11,7 +11,7 @@ Provides structured, type-safe data definitions for:
 
 from __future__ import annotations
 
-from pydantic import BaseModel, Field, validator, ConfigDict
+from pydantic import BaseModel, Field, ConfigDict
 from typing import Optional, List, Dict, Any, Literal
 from enum import Enum
 

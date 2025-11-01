@@ -15,12 +15,12 @@ from __future__ import annotations
 import time
 import logging
 from enum import Enum
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Callable, Any, Optional, TypeVar, Dict
 from functools import wraps
 from threading import RLock
 
-from src.errors import CircuitOpenError, DependencyError
+from src.errors import CircuitOpenError
 
 logger = logging.getLogger(__name__)
 
