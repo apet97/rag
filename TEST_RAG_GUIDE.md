@@ -119,6 +119,29 @@ ls -lah index/faiss/clockify_url/
 # Should show: index.bin, meta.json
 ```
 
+### Error: "No such file or directory: 'index/faiss/clockify/meta.json'"
+
+**Cause:** Namespace mismatch - your `.env` has wrong `NAMESPACES` value.
+
+**Quick fix:**
+```bash
+# Automated fix
+./FIX_NAMESPACES.sh
+
+# Or manual fix
+sed -i '' 's/NAMESPACES=.*/NAMESPACES=clockify_url/' .env
+
+# Verify
+grep NAMESPACES .env
+# Should show: NAMESPACES=clockify_url
+
+# Check what index directories exist
+ls -1 index/faiss/
+# Should match your NAMESPACES value
+```
+
+**Why this happens:** The index is built with namespace `clockify_url`, but your `.env` might have `NAMESPACES=clockify` or `NAMESPACES=clockify,langchain`. They must match exactly.
+
 ### Error: "Embedding model not found"
 
 ```bash
