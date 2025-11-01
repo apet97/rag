@@ -1,0 +1,29 @@
+name: Static Analysis (strict flake8)
+
+on:
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch: {}
+
+jobs:
+  flake8-strict:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+          cache-dependency-path: |
+            requirements.txt
+            constraints.txt
+      - name: Install flake8
+        run: |
+          python -m pip install --upgrade pip
+          pip install flake8 -c constraints.txt || pip install flake8
+      - name: flake8 F401/F841 on selected src files
+        run: |
+          # Use isolated mode to avoid repo-wide ignores; start with cleaned modules
+          flake8 --isolated --select=F401,F841 --max-line-length=200 \
+            src/search_improvements.py src/scoring.py src/embeddings_async.py src/query_decomposition.py
+
