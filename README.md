@@ -9,6 +9,29 @@ Local, production-ready retrieval-augmented generation system for Clockify Help 
 
 > **🛠 Improvement Plan**: See `codex/IMPROVEMENT_PLAN.md` for a prioritized roadmap (typing/lint, tests, retrieval tuning, and ops monitoring).
 
+## Company Laptop Quickstart (Offline)
+
+No VPN or internet required. Build a local index with the stub backend and run everything offline.
+
+```bash
+python3 -m venv .venv && source .venv/bin/activate
+python3 -m pip install --upgrade pip
+pip install -r requirements.txt -c constraints.txt
+
+export EMBEDDINGS_BACKEND=stub
+export NAMESPACE=clockify
+export CHUNK_STRATEGY=url_level
+python3 tools/ingest_v2.py   # writes index/faiss/clockify_url/
+
+uvicorn src.server:app --host 0.0.0.0 --port 7001
+
+# New terminal (token required in dev)
+curl http://localhost:7001/healthz
+curl -H 'x-api-token: change-me' 'http://localhost:7001/search?q=create%20project&namespace=clockify_url&k=5'
+```
+
+Full offline guide: `codex/RUN_ON_COMPANY_LAPTOP.md`.
+
 **Latest Updates (2025-10-30)**:
 - ✅ Fixed critical answerability bug (context truncation mismatch)
 - ✅ Increased context window 4.8x (2K → 9.6K characters)
