@@ -82,6 +82,7 @@ def health_summary() -> dict:
 # Back-compat shim for server references
 class _Compat:
     MAX_CONTEXT_CHUNKS: int = int(_get_env("MAX_CONTEXT_CHUNKS", "8"))
+    CONTEXT_CHAR_LIMIT: int = int(_get_env("CONTEXT_CHAR_LIMIT", "1200"))
 
 
 CONFIG = _Compat()
