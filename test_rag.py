@@ -19,7 +19,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 from src.index_manager import IndexManager
 from src.embeddings import embed_query, get_embedder
-from src.config import NAMESPACE
+from src.config import NAMESPACE, INDEX_ROOT, NAMESPACES
 
 
 def test_search(query: str, k: int = 5):
@@ -40,7 +40,7 @@ def test_search(query: str, k: int = 5):
         print(f"✓ Embedding model loaded")
 
         # Load index manager
-        mgr = IndexManager()
+        mgr = IndexManager(INDEX_ROOT, NAMESPACES)
         mgr.ensure_loaded()
         print(f"✓ Index manager loaded")
         print()
@@ -137,7 +137,7 @@ def test_chat(query: str):
     print("🔍 Step 1: Retrieving relevant documents...")
     try:
         embedder = get_embedder()
-        mgr = IndexManager()
+        mgr = IndexManager(INDEX_ROOT, NAMESPACES)
         mgr.ensure_loaded()
 
         query_vec = embed_query(query)
