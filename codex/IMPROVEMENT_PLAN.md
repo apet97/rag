@@ -19,22 +19,20 @@ This document summarizes an end‑to‑end review of the repository and proposes
 - Tests: runtime guard tests exist but could be expanded (allowlist drop/refill, health endpoints contract, index namespace integrity).
 - Performance tuning: Hybrid weight default chosen; recommend periodic sweeps and reporting.
 
-## Recommended Improvements
+## Recommended Improvements (Progress tracked)
 
 ### 1) Type Safety (Short Term)
-- Expand strict mypy set to: `src/retrieval_engine.py`, `src/search_improvements.py`, `src/scoring.py`, selected parts of `src/server.py` (health/config endpoints).
-- Fix easy wins: replace Any returns with concrete types, add `typing.cast` where third‑party stubs are weak, use `Callable` instead of `callable`.
+- DONE: Addressed easy wins and made `mypy src` clean (non‑strict global config):
+  - `embeddings_async.py` (Callable), `server.py` (test helper), `query_decomposition.py` (no‑any‑return), `tuning_config.py` (float cast), `llm_client.py` (circuit breaker returns)
+- NEXT: Expand to strict subsets: `retrieval_engine.py`, `search_improvements.py`, `scoring.py`, and selected server endpoints with per‑module strict config.
 
 ### 2) Lint and Imports (Short Term)
 - Clean unused imports/variables across `src/` to allow enabling basic F401/F841 for src in CI without noise.
 - Keep `tests/`, `eval/`, and `scripts/` excluded until staged cleanup to avoid blocking.
 
 ### 3) Tests (Short→Medium)
-- Add integration tests for:
-  - Allowlist guard drop/refill path (negative tests for non‑allowlisted URLs).
-  - Citation shape contract: includes title + URL, no raw embeddings in JSON.
-  - Health endpoints: `/healthz`, `/readyz` report fields: `namespace`, `index_present`, `index_digest`, `lexical_weight`, `chunk_strategy`.
-  - Chunking correctness on long help pages (h2/h3 boundaries; overlap behavior).
+- DONE: Unit tests for health endpoints, allowlist drop/refill (helper), and H2/H3 chunking behavior.
+- NEXT: Add end‑to‑end negative test for non‑allowlisted citations in chat (mock retrieval), and validate citation shape explicitly at chat layer.
 
 ### 4) Retrieval Quality (Medium)
 - Periodic `hybrid_sweep.py` runs and update default `SEARCH_LEXICAL_WEIGHT` based on `HYBRID_TUNING.md` best Hit@5 then MRR.
@@ -68,13 +66,15 @@ This document summarizes an end‑to‑end review of the repository and proposes
   - Evaluate `h2_h3_blocks` as default for long pages if it improves Hit@5 without latency regressions.
   - Harden runtimes: tighten timeouts, confirm circuit‑breaker trip/restore behavior in live smoke.
 
-## Current Changes (PR)
+## Current Changes (merged)
 - Small mypy fixes (no behavior change):
   - `src/tuning_config.py`: precise return typing and float cast for decay.
   - `src/chunkers/clockify.py`: cast BeautifulSoup `get_text` to `str`.
   - `src/retrieval_engine.py`: typed pytz import to silence import‑untyped noise.
   - `src/llm_client.py`: return types safe with cast; explicit `str(resp.text)`.
   - `src/query_decomposition.py`: lazy import `LLMClient` to avoid type assignment errors.
+- Tests added:
+  - `tests/test_health_endpoints.py`, `tests/test_allowlist_refill.py`, `tests/test_chunking_clockify.py`
 
 ## Links
 - Repo: https://github.com/apet97/rag
