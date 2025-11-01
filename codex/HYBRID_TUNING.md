@@ -1,7 +1,12 @@
 # Hybrid Tuning
 
-- Namespace: clockify
+- Namespace: clockify_url
 - Index root: index/faiss
-- Eval: missing at codex/RAG_EVAL_TASKS.jsonl
+- Eval size: 10
 
-Evaluation set not found. Provide codex/RAG_EVAL_TASKS.jsonl and re-run.
+
+| weight | Hit@1 | Hit@3 | Hit@5 | MRR |
+|---:|---:|---:|---:|---:|
+| 0.20 | 0.10 | 0.20 | 0.50 | 0.220 |
+| 0.35 | 0.10 | 0.20 | 0.50 | 0.220 |
+| 0.50 | 0.10 | 0.20 | 0.50 | 0.220 |

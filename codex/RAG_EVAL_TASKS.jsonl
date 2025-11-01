@@ -1,0 +1,10 @@
+{"id": "q1", "question": "how to create project", "expected": ["https://clockify.me/help/projects/creating-projects", "https://clockify.me/help/projects"], "topic": "clockify"}
+{"id": "q2", "question": "invoicing tracked time", "expected": ["https://clockify.me/help/projects/invoicing-tracked-time-expenses"], "topic": "clockify"}
+{"id": "q3", "question": "quickbooks integration", "expected": ["https://clockify.me/help/integrations/tracking-integrations-integrations/quickbooks-integration"], "topic": "clockify"}
+{"id": "q4", "question": "jira integration", "expected": ["https://clockify.me/help/integrations/tracking-integrations-integrations/jira-integration"], "topic": "clockify"}
+{"id": "q5", "question": "single sign on sso", "expected": ["https://clockify.me/help/getting-started/single-sign-on-sso"], "topic": "clockify"}
+{"id": "q6", "question": "request time off", "expected": ["https://clockify.me/help/getting-started/request-time-off-regular-user"], "topic": "clockify"}
+{"id": "q7", "question": "approve time entries", "expected": ["https://clockify.me/help/getting-started/approve-teams-time-entries"], "topic": "clockify"}
+{"id": "q8", "question": "api webhook settings", "expected": ["https://clockify.me/help/administration/api-webhook-settings"], "topic": "clockify"}
+{"id": "q9", "question": "manager role", "expected": ["https://clockify.me/help/administration/user-roles-and-permissions/manager-role"], "topic": "clockify"}
+{"id": "q10", "question": "export projects", "expected": ["https://clockify.me/help/projects/exporting-projects"], "topic": "clockify"}

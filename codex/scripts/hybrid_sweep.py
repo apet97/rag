@@ -9,9 +9,16 @@ Designed to degrade gracefully when no index is present: emits a note and exits 
 from __future__ import annotations
 
 import os
+import sys
 import json
 import argparse
-from typing import List, Dict, Any, Tuple
+from pathlib import Path
+from typing import List, Dict, Any, Tuple, Optional
+
+# Ensure repo root is on path to import src.* modules
+ROOT = Path(__file__).resolve().parents[2]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 
 
 def _index_present(index_root: str, namespace: str) -> bool:
@@ -36,19 +43,77 @@ def _load_eval(path: str) -> List[Dict[str, Any]]:
     return items
 
 
-def _evaluate(weights: List[float], eval_set: List[Dict[str, Any]], namespace: str) -> List[Dict[str, Any]]:
-    # Minimal, offline-friendly evaluation that only reports configuration.
-    # A full evaluation should import the server and run hybrid retrieval per weight.
-    results = []
+def _canon(url: str) -> str:
+    url = url.strip()
+    if not url:
+        return url
+    # Lowercase, drop fragment and trailing slash
+    from urllib.parse import urlparse
+    p = urlparse(url)
+    path = p.path.rstrip('/')
+    return f"{p.scheme}://{p.netloc}{path}"
+
+
+def _evaluate_real(weights: List[float], eval_set: List[Dict[str, Any]], index_root: str, namespace: str) -> List[Dict[str, Any]]:
+    import os
+    from pathlib import Path
+    # Force stub embeddings to avoid heavy model imports during sweep
+    os.environ.setdefault('EMBEDDINGS_BACKEND', 'stub')
+    from src import embeddings
+    from src import server
+    from src import config as CFG
+
+    # Prepare server index manager for the given namespace dir
+    os.environ['RAG_INDEX_ROOT'] = index_root
+    os.environ['NAMESPACES'] = namespace
+    server.index_manager = server.IndexManager(Path(index_root), [namespace])
+    server.index_manager.ensure_loaded()
+
+    results: List[Dict[str, Any]] = []
     for w in weights:
-        results.append({
-            "weight": w,
-            "hit_at_1": None,
-            "hit_at_3": None,
-            "hit_at_5": None,
-            "mrr": None,
-            "note": "Index not present; run again when index/faiss/<namespace> is available.",
-        })
+        # Set lexical weight dynamically
+        CFG.SEARCH_LEXICAL_WEIGHT = str(w)
+        total = len(eval_set)
+        hit1 = hit3 = hit5 = 0
+        mrr_sum = 0.0
+        for item in eval_set:
+            q = item.get('question', '')
+            expected: List[str] = [
+                _canon(u) for u in item.get('expected', [])
+            ]
+            if not q or not expected:
+                total -= 1
+                continue
+            qvec = embeddings.embed_query(q)
+            try:
+                res = server.search_ns_hybrid(namespace, qvec, q, k=5)
+            except Exception:
+                res = []
+            cand_urls = [_canon(r.get('url','')) for r in res[:5]]
+            # rank of first match
+            rank: Optional[int] = None
+            for idx, cu in enumerate(cand_urls, start=1):
+                if any(cu.startswith(e) or e.startswith(cu) for e in expected):
+                    rank = idx
+                    break
+            if rank is not None:
+                if rank == 1:
+                    hit1 += 1
+                if rank <= 3:
+                    hit3 += 1
+                if rank <= 5:
+                    hit5 += 1
+                mrr_sum += 1.0 / rank
+        if total <= 0:
+            results.append({"weight": w, "hit_at_1": None, "hit_at_3": None, "hit_at_5": None, "mrr": None, "note": "no valid eval items"})
+        else:
+            results.append({
+                "weight": w,
+                "hit_at_1": hit1/total,
+                "hit_at_3": hit3/total,
+                "hit_at_5": hit5/total,
+                "mrr": mrr_sum/total,
+            })
     return results
 
 
@@ -103,15 +168,20 @@ def main() -> None:
         print(f"Wrote placeholder tuning report to {args.out}")
         return
 
-    # Placeholder for real evaluation (not executed here due to environment constraints)
-    rows = _evaluate(weights, eval_set, args.namespace)
+    # Real evaluation using in-process retrieval
+    rows = _evaluate_real(weights, eval_set, args.index_root, args.namespace)
     with open(args.out, "w", encoding="utf-8") as f:
         f.write("\n".join(header))
         f.write("\n\n")
         f.write("| weight | Hit@1 | Hit@3 | Hit@5 | MRR |\n")
         f.write("|---:|---:|---:|---:|---:|\n")
         for r in rows:
-            f.write(f"| {r['weight']:.2f} | - | - | - | - |\n")
+            if r.get('hit_at_1') is None:
+                f.write(f"| {r['weight']:.2f} | - | - | - | - |\n")
+            else:
+                f.write(
+                    f"| {r['weight']:.2f} | {r['hit_at_1']:.2f} | {r['hit_at_3']:.2f} | {r['hit_at_5']:.2f} | {r['mrr']:.3f} |\n"
+                )
     print(f"Wrote tuning report to {args.out}")
 
 
