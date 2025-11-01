@@ -1,0 +1,73 @@
+# RAG Setup - Copy/Paste Commands
+# For VPN-enabled company device
+# Just copy each section and paste into terminal
+
+# ============================================
+# SECTION 1: CLONE REPOSITORY
+# ============================================
+cd ~
+git clone https://github.com/apet97/rag.git
+cd rag
+
+# ============================================
+# SECTION 2: PYTHON ENVIRONMENT
+# ============================================
+python3 -m venv .venv
+source .venv/bin/activate
+pip install --upgrade pip
+pip install -r requirements.txt -c constraints.txt
+
+# ============================================
+# SECTION 3: CONFIGURATION
+# ============================================
+cp .env.example .env
+# Default settings work! No editing needed.
+
+# ============================================
+# SECTION 4: BUILD INDEX
+# ============================================
+make ingest_v2
+
+# ============================================
+# SECTION 5: VALIDATE (OPTIONAL)
+# ============================================
+make offline_eval
+
+# ============================================
+# SECTION 6: LAUNCH SERVER
+# ============================================
+uvicorn src.server:app --host 0.0.0.0 --port 7001
+
+# ============================================
+# Open browser: http://localhost:7001
+# ============================================
+
+# ============================================
+# SECTION 7: TEST (NEW TERMINAL)
+# ============================================
+# Health check
+curl http://localhost:7001/healthz
+
+# Search test
+curl -H 'x-api-token: change-me' \
+  'http://localhost:7001/search?q=create%20project&k=5'
+
+# VPN LLM test
+curl http://10.127.0.192:11434/api/tags
+
+# ============================================
+# DONE! 🎉
+# ============================================
+
+# ============================================
+# FUTURE LAUNCHES (after initial setup)
+# ============================================
+cd ~/rag
+source .venv/bin/activate
+uvicorn src.server:app --host 0.0.0.0 --port 7001
+
+# ============================================
+# OR USE AUTOMATED SCRIPT
+# ============================================
+cd ~/rag
+./scripts/run_local.sh
