@@ -6,8 +6,7 @@ Scores results based on semantic similarity, keyword matching, and metadata.
 """
 
 import logging
-from typing import Dict, List, Optional
-import math
+from typing import Dict, List
 
 logger = logging.getLogger(__name__)
 
