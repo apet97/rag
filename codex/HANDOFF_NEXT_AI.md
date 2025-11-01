@@ -53,9 +53,11 @@ Environment variables are centralized and validated (see `.env.example`, `src/co
 - Health endpoint contract tests: `tests/test_health_endpoints.py`
 - Allowlist refill behavior (helper-backed): `tests/test_allowlist_refill.py`
 - H2/H3 chunking behavior and list/code preservation: `tests/test_chunking_clockify.py`
+- Citation validator unit tests: `tests/test_citation_validator.py`
 
 Run a subset locally:
 - `pytest -q tests/test_health_endpoints.py tests/test_allowlist_refill.py tests/test_chunking_clockify.py`
+- `pytest -q tests/test_citation_validator.py`
 
 ## 6) Endpoints (FastAPI)
 - `GET /healthz` and `GET /readyz` – report ok, namespace, index_present, index_digest, lexical_weight, chunk_strategy
