@@ -42,6 +42,8 @@ from src.index_manager import IndexManager
 from src.performance_tracker import get_performance_tracker
 from src.prompt import RAGPrompt
 from src.semantic_cache import get_semantic_cache
+from src.session_manager import SessionManager
+from src.conversation_context import build_conversation_prompt
 
 # Allow/Deny patterns for runtime enforcement
 _ALLOWLIST_PATH = str(CFG.ALLOWLIST_PATH)
@@ -155,6 +157,11 @@ MOCK_LLM = os.getenv("MOCK_LLM", "false").lower() == "true"
 
 # PHASE 2 REFACTOR: Global index manager (initialized in _startup)
 index_manager: Optional[IndexManager] = None
+
+# Session manager for multi-turn conversations
+SESSION_TTL_SECONDS = int(os.getenv("SESSION_TTL_SECONDS", "3600"))  # 1 hour default
+SESSION_MAX = int(os.getenv("SESSION_MAX_CONVERSATIONS", "1000"))
+session_manager = SessionManager(ttl_seconds=SESSION_TTL_SECONDS, max_sessions=SESSION_MAX)
 
 
 async def _startup() -> None:
@@ -1598,6 +1605,313 @@ def chat(
     except Exception as e:
         logger.error(f"Chat failed: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
+
+
+# --------- Session-based Chat Endpoints ---------
+
+@app.post("/chat/session")
+def create_chat_session(
+    namespace: str = Query(default="clockify", description="Knowledge base namespace"),
+    x_api_token: Optional[str] = Header(default=None),
+) -> Dict[str, Any]:
+    """
+    Create a new chat session for multi-turn conversations.
+
+    Returns session_id which should be used for subsequent chat requests.
+    Sessions expire after SESSION_TTL_SECONDS of inactivity (default: 1 hour).
+
+    Example:
+        POST /chat/session?namespace=clockify
+        Returns: {"session_id": "abc-123-def", "created_at": "...", "ttl_seconds": 3600}
+    """
+    require_token(x_api_token)
+
+    session_id = session_manager.create_session(namespace=namespace)
+
+    from datetime import datetime, timezone
+    return {
+        "session_id": session_id,
+        "namespace": namespace,
+        "created_at": datetime.now(timezone.utc).isoformat(),
+        "ttl_seconds": SESSION_TTL_SECONDS,
+    }
+
+
+@app.post("/chat/session/{session_id}", response_model=ChatResponse)
+async def chat_with_session(
+    session_id: str,
+    req: ChatRequest,
+    request: Request,
+    x_api_token: Optional[str] = Header(default=None),
+) -> ChatResponse:
+    """
+    Chat within an existing session (multi-turn conversation).
+
+    Maintains conversation history and context across multiple turns.
+    Each turn includes the conversation history in the LLM prompt.
+
+    Example:
+        POST /chat/session/abc-123-def
+        Body: {"question": "How do I create a project?", "k": 5}
+
+    Args:
+        session_id: Session ID from create_chat_session
+        req: Chat request (question, k, namespace)
+        request: FastAPI request object
+        x_api_token: API token for authentication
+
+    Returns:
+        ChatResponse with answer, sources, and metadata
+    """
+    require_token(x_api_token)
+    rate_limit(request.client.host if request.client else "unknown")
+
+    # Get session
+    session = session_manager.get_session(session_id)
+    if not session:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Session not found or expired: {session_id}"
+        )
+
+    # Use session's namespace if not specified in request
+    namespace = req.namespace or session["namespace"]
+
+    start_time = time.time()
+
+    try:
+        # Retrieval phase (same as regular /chat)
+        logger.debug(f"Session {session_id} turn {len(session['conversation']) + 1}: question='{req.question}'")
+
+        # Expand query
+        from src.query_expand import expand_structured
+        expanded_variants = expand_structured(req.question)
+        logger.debug(f"Query expanded to {len(expanded_variants)} weighted variants")
+
+        # Detect query type
+        from src.search_improvements import detect_query_type, get_adaptive_k_multiplier
+        query_type = detect_query_type(req.question)
+
+        # Encode variants
+        from src.embeddings import encode_weighted_variants
+        query_variants = encode_weighted_variants(expanded_variants)
+
+        # Hybrid retrieval
+        k_multiplier = get_adaptive_k_multiplier(query_type)
+        adaptive_k = min(int((req.k or RETRIEVAL_K) * k_multiplier), 100)
+
+        retrieval_start = time.time()
+        combined_results = await search_ns_hybrid(
+            query_vec=query_variants[0][0] if query_variants else None,  # Primary variant
+            raw_k=adaptive_k,
+            k_final=req.k or RETRIEVAL_K,
+            namespaces=[namespace],
+            query_text=req.question,
+        )
+        retrieval_ms = int((time.time() - retrieval_start) * 1000)
+
+        # Build context from results
+        sources = []
+        context_parts = []
+
+        for i, result in enumerate(combined_results[:CFG.CONFIG.MAX_CONTEXT_CHUNKS], 1):
+            content_text = result.get("text", result.get("content", ""))
+            if content_text:
+                # Truncate to avoid context explosion
+                truncated = content_text[:CFG.CONFIG.CONTEXT_CHAR_LIMIT]
+                context_parts.append(f"[{i}] {truncated}")
+
+                sources.append({
+                    "url": result.get("url", ""),
+                    "title": result.get("title", result.get("h1", "Untitled")),
+                    "text": truncated,
+                    "chunk_id": result.get("chunk_id", ""),
+                    "score": result.get("final_score", 0.0)
+                })
+
+        retrieved_context = "\n\n".join(context_parts)
+
+        # Build multi-turn prompt with conversation history
+        from src.conversation_context import build_conversation_prompt
+        messages, developer_instructions = build_conversation_prompt(
+            current_question=req.question,
+            conversation_history=session["conversation"],
+            retrieved_context=retrieved_context,
+            sources=sources,
+            namespace=namespace,
+            max_history_turns=3
+        )
+
+        logger.debug(f"Built conversation prompt with {len(session['conversation'])} previous turns")
+
+        # Call LLM with multi-turn conversation
+        llm_start = time.time()
+        llm = LLMClient()
+        answer = llm.chat(messages)  # Uses conversation history
+        llm_ms = int((time.time() - llm_start) * 1000)
+
+        # Answerability check
+        from src.llm_client import compute_answerability_score
+        answerability_score = compute_answerability_score(answer, retrieved_context)
+        is_answerable = answerability_score >= CFG.CONFIG.ANSWERABILITY_THRESHOLD
+
+        logger.info(
+            f"Session {session_id} answerability: score={answerability_score:.3f}, "
+            f"threshold={CFG.CONFIG.ANSWERABILITY_THRESHOLD}, passed={is_answerable}"
+        )
+
+        if not is_answerable:
+            logger.warning(f"Answerability check failed for session {session_id}")
+            answer = "I don't have enough information in the documentation to answer that question confidently."
+
+        # Citation validation
+        from src.citation_validator import validate_citations
+        citation_validation = validate_citations(answer, len(sources))
+
+        # Store turn in session
+        session_manager.add_turn(session_id, {
+            "user_question": req.question,
+            "llm_answer": answer,
+            "retrieved_urls": [s["url"] for s in sources],
+            "answerability_score": answerability_score,
+            "is_answerable": is_answerable,
+        })
+
+        total_ms = int((time.time() - start_time) * 1000)
+
+        logger.info(
+            f"Session {session_id} turn {len(session['conversation'])} complete: "
+            f"{len(sources)} sources, {retrieval_ms}ms retrieval, {llm_ms}ms LLM, {total_ms}ms total"
+        )
+
+        return ChatResponse(
+            success=True,
+            answer=answer,
+            sources=sources,
+            latency_ms={
+                "retrieval": retrieval_ms,
+                "llm": llm_ms,
+                "total": total_ms,
+            },
+            meta={
+                "session_id": session_id,
+                "turn": len(session["conversation"]),
+                "has_conversation_history": len(session["conversation"]) > 1,
+                "answerability_score": answerability_score,
+                "is_answerable": is_answerable,
+                "citations": citation_validation.total_citations,
+            },
+        )
+
+    except Exception as e:
+        logger.error(f"Session {session_id} chat failed: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/chat/session/{session_id}")
+def get_chat_session(
+    session_id: str,
+    x_api_token: Optional[str] = Header(default=None),
+) -> Dict[str, Any]:
+    """
+    Retrieve full conversation history for a session.
+
+    Example:
+        GET /chat/session/abc-123-def
+        Returns: {session_id, namespace, conversation: [...], created_at, ...}
+    """
+    require_token(x_api_token)
+
+    session = session_manager.get_session(session_id)
+    if not session:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Session not found or expired: {session_id}"
+        )
+
+    # Convert datetime objects to ISO strings for JSON serialization
+    from datetime import datetime
+    return {
+        **session,
+        "created_at": session["created_at"].isoformat() if isinstance(session["created_at"], datetime) else session["created_at"],
+        "last_accessed": session["last_accessed"].isoformat() if isinstance(session["last_accessed"], datetime) else session["last_accessed"],
+    }
+
+
+@app.delete("/chat/session/{session_id}")
+def delete_chat_session(
+    session_id: str,
+    x_api_token: Optional[str] = Header(default=None),
+) -> Dict[str, Any]:
+    """
+    Delete a chat session.
+
+    Example:
+        DELETE /chat/session/abc-123-def
+        Returns: {"deleted": true, "session_id": "abc-123-def"}
+    """
+    require_token(x_api_token)
+
+    deleted = session_manager.delete_session(session_id)
+    if not deleted:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Session not found: {session_id}"
+        )
+
+    return {
+        "deleted": True,
+        "session_id": session_id,
+    }
+
+
+@app.get("/chat/sessions")
+def list_chat_sessions(
+    x_api_token: Optional[str] = Header(default=None),
+) -> Dict[str, Any]:
+    """
+    List all active chat sessions.
+
+    Example:
+        GET /chat/sessions
+        Returns: {"sessions": ["abc-123", "def-456"], "stats": {...}}
+    """
+    require_token(x_api_token)
+
+    sessions = session_manager.list_sessions()
+    stats = session_manager.get_stats()
+
+    return {
+        "sessions": sessions,
+        "stats": stats,
+    }
+
+
+@app.post("/chat/sessions/cleanup")
+def cleanup_expired_sessions(
+    x_api_token: Optional[str] = Header(default=None),
+) -> Dict[str, Any]:
+    """
+    Manually trigger cleanup of expired sessions.
+
+    Sessions are automatically cleaned up on session creation,
+    but this endpoint allows manual cleanup if needed.
+
+    Example:
+        POST /chat/sessions/cleanup
+        Returns: {"removed": 5, "remaining": 12}
+    """
+    require_token(x_api_token)
+
+    removed = session_manager.cleanup_expired()
+    remaining = len(session_manager.list_sessions())
+
+    logger.info(f"Manual session cleanup: removed {removed}, remaining {remaining}")
+
+    return {
+        "removed": removed,
+        "remaining": remaining,
+    }
 
 
 @app.post("/chat/stream")

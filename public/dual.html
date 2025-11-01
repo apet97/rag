@@ -271,6 +271,7 @@
                     onkeypress="if(event.key==='Enter') askQuestion()"
                 >
                 <button onclick="askQuestion()" id="askBtn">Ask</button>
+                <button onclick="newChat()" id="newChatBtn" style="background: #6c757d;">New Chat</button>
             </div>
         </div>
 
@@ -301,10 +302,73 @@
 
     <script>
         const API_TOKEN = 'change-me'; // Will use .env value
+        let sessionId = null;
+
+        // Initialize or get session on page load
+        async function initSession() {
+            sessionId = localStorage.getItem('chat_session_id');
+
+            if (!sessionId) {
+                try {
+                    const response = await fetch('/chat/session', {
+                        method: 'POST',
+                        headers: { 'x-api-token': API_TOKEN }
+                    });
+                    const data = await response.json();
+                    sessionId = data.session_id;
+                    localStorage.setItem('chat_session_id', sessionId);
+                    console.log('Created new session:', sessionId);
+                } catch (error) {
+                    console.error('Failed to create session:', error);
+                }
+            } else {
+                console.log('Using existing session:', sessionId);
+            }
+        }
+
+        // Start new chat (clear session)
+        async function newChat() {
+            if (sessionId) {
+                try {
+                    await fetch(`/chat/session/${sessionId}`, {
+                        method: 'DELETE',
+                        headers: { 'x-api-token': API_TOKEN }
+                    });
+                } catch (error) {
+                    console.error('Failed to delete session:', error);
+                }
+            }
+
+            localStorage.removeItem('chat_session_id');
+            sessionId = null;
+
+            // Clear UI
+            document.getElementById('queryInput').value = '';
+            document.getElementById('articlesPanel').innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-state-icon">📄</div>
+                    <p>Enter a question to see related articles</p>
+                </div>
+            `;
+            document.getElementById('answerPanel').innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-state-icon">🤖</div>
+                    <p>Enter a question to get an AI-powered answer</p>
+                </div>
+            `;
+
+            // Re-initialize session
+            await initSession();
+
+            console.log('Started new chat session');
+        }
 
         async function askQuestion() {
             const query = document.getElementById('queryInput').value.trim();
             if (!query) return;
+
+            // Ensure session exists
+            await initSession();
 
             const askBtn = document.getElementById('askBtn');
             askBtn.disabled = true;
@@ -325,12 +389,12 @@
             `;
 
             try {
-                // Fetch search results and chat response in parallel
+                // Fetch search results and session-based chat response in parallel
                 const [searchData, chatData] = await Promise.all([
                     fetch(`/search?q=${encodeURIComponent(query)}&k=5`, {
                         headers: { 'x-api-token': API_TOKEN }
                     }).then(r => r.json()),
-                    fetch('/chat', {
+                    fetch(`/chat/session/${sessionId}`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -343,8 +407,8 @@
                 // Display articles
                 displayArticles(searchData.results || []);
 
-                // Display answer
-                displayAnswer(chatData.answer || '', chatData.sources || []);
+                // Display answer with session info
+                displayAnswer(chatData.answer || '', chatData.sources || [], chatData.meta);
 
             } catch (error) {
                 console.error('Error:', error);
@@ -390,7 +454,7 @@
             panel.innerHTML = `<div class="article-list">${articlesHTML}</div>`;
         }
 
-        function displayAnswer(answer, sources) {
+        function displayAnswer(answer, sources, meta) {
             const panel = document.getElementById('answerPanel');
 
             if (!answer) {
@@ -411,6 +475,17 @@
 
             formattedAnswer = `<p>${formattedAnswer}</p>`;
 
+            // Add session info if available
+            let sessionInfoHTML = '';
+            if (meta && meta.turn) {
+                const isMultiTurn = meta.has_conversation_history;
+                sessionInfoHTML = `
+                    <div style="font-size: 12px; color: #718096; margin-bottom: 10px;">
+                        ${isMultiTurn ? '💬 Conversation mode' : '🆕 First message'} · Turn ${meta.turn}
+                    </div>
+                `;
+            }
+
             // Add sources
             let sourcesHTML = '';
             if (sources && sources.length > 0) {
@@ -428,14 +503,18 @@
 
             panel.innerHTML = `
                 <div class="answer-content">
+                    ${sessionInfoHTML}
                     ${formattedAnswer}
                     ${sourcesHTML}
                 </div>
             `;
         }
 
-        // Focus input on load
-        document.getElementById('queryInput').focus();
+        // Initialize session on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            initSession();
+            document.getElementById('queryInput').focus();
+        });
     </script>
 </body>
 </html>
