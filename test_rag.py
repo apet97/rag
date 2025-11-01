@@ -20,6 +20,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 from src.index_manager import IndexManager
 from src.embeddings import embed_query, get_embedder
 from src.config import NAMESPACE, INDEX_ROOT, NAMESPACES
+import numpy as np
 
 
 def test_search(query: str, k: int = 5):
@@ -60,24 +61,39 @@ def test_search(query: str, k: int = 5):
         return
 
     # Search
-    print(f"🔎 Searching index (namespace={NAMESPACE})...")
+    print(f"🔎 Searching index (namespace={NAMESPACES[0]})...")
     try:
-        # Try with namespace suffix
-        namespace = f"{NAMESPACE}_url" if not NAMESPACE.endswith("_url") else NAMESPACE
-        results = mgr.search(namespace, query_vec, k=k)
+        namespace = NAMESPACES[0]
+
+        # Get FAISS index and metadata
+        idx_data = mgr.get_index(namespace)
+        faiss_index = idx_data["index"]
+        metadata = idx_data["metas"]
+
+        # Prepare query vector for FAISS (needs 2D array)
+        query_vec_2d = np.array([query_vec], dtype=np.float32)
+
+        # Normalize if index is normalized
+        if mgr.is_normalized(namespace):
+            faiss.normalize_L2(query_vec_2d)
+
+        # Search FAISS index
+        import faiss
+        scores, indices = faiss_index.search(query_vec_2d, k)
+
+        # Build results with metadata
+        results = []
+        for i, (score, idx) in enumerate(zip(scores[0], indices[0])):
+            if idx >= 0 and idx < len(metadata):
+                results.append((int(idx), float(score)))
+
         print(f"✓ Search complete: Found {len(results)} results")
         print()
     except Exception as e:
         print(f"❌ Search failed: {e}")
-        # Try without suffix
-        try:
-            results = mgr.search(NAMESPACE, query_vec, k=k)
-            print(f"✓ Search complete: Found {len(results)} results")
-            print()
-            namespace = NAMESPACE
-        except Exception as e2:
-            print(f"❌ Search failed (both attempts): {e2}")
-            return
+        import traceback
+        traceback.print_exc()
+        return
 
     # Display results
     print("📊 SEARCH RESULTS")
@@ -90,7 +106,7 @@ def test_search(query: str, k: int = 5):
 
     for i, (doc_id, score) in enumerate(results, 1):
         try:
-            meta = mgr.get_metadata(namespace, doc_id)
+            meta = metadata[doc_id]
 
             print(f"Result #{i}")
             print(f"  Score: {score:.4f}")
@@ -101,7 +117,7 @@ def test_search(query: str, k: int = 5):
                 title = title[:97] + "..."
             print(f"  Title: {title}")
 
-            content = meta.get('content', '')
+            content = meta.get('content', meta.get('text', ''))
             if content:
                 preview = content[:200].replace('\n', ' ')
                 if len(content) > 200:
@@ -136,19 +152,42 @@ def test_chat(query: str):
     # Search first
     print("🔍 Step 1: Retrieving relevant documents...")
     try:
+        import faiss
         embedder = get_embedder()
         mgr = IndexManager(INDEX_ROOT, NAMESPACES)
         mgr.ensure_loaded()
 
         query_vec = embed_query(query)
-        namespace = f"{NAMESPACE}_url" if not NAMESPACE.endswith("_url") else NAMESPACE
-        results = mgr.search(namespace, query_vec, k=5)
+        namespace = NAMESPACES[0]
+
+        # Get FAISS index and metadata
+        idx_data = mgr.get_index(namespace)
+        faiss_index = idx_data["index"]
+        metadata = idx_data["metas"]
+
+        # Prepare query vector for FAISS (needs 2D array)
+        query_vec_2d = np.array([query_vec], dtype=np.float32)
+
+        # Normalize if index is normalized
+        if mgr.is_normalized(namespace):
+            faiss.normalize_L2(query_vec_2d)
+
+        # Search FAISS index
+        scores, indices = faiss_index.search(query_vec_2d, 5)
+
+        # Build results with metadata
+        results = []
+        for i, (score, idx) in enumerate(zip(scores[0], indices[0])):
+            if idx >= 0 and idx < len(metadata):
+                results.append((int(idx), float(score)))
 
         print(f"✓ Found {len(results)} relevant documents")
         print()
 
     except Exception as e:
         print(f"❌ Retrieval failed: {e}")
+        import traceback
+        traceback.print_exc()
         return
 
     # Build context
@@ -158,8 +197,8 @@ def test_chat(query: str):
 
     for i, (doc_id, score) in enumerate(results, 1):
         try:
-            meta = mgr.get_metadata(namespace, doc_id)
-            content = meta.get('content', '')
+            meta = metadata[doc_id]
+            content = meta.get('content', meta.get('text', ''))
             url = meta.get('url', '')
             title = meta.get('title', meta.get('h1', ''))
 
