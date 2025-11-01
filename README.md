@@ -3,6 +3,13 @@
 
 Local, production-ready retrieval-augmented generation system for Clockify Help + LangChain docs. Zero cloud services, full control, state-of-the-art retrieval.
 
+## Quick Links
+
+- Run on VPN (one command): `./scripts/run_local.sh`
+- Run on VPN with real embeddings (MiniLM, 384): `./scripts/run_local_real.sh`
+- Offline runbook: `codex/RUN_ON_COMPANY_LAPTOP.md`
+- VPN runbook: `codex/RUN_ON_VPN.md`
+
 > **📚 For Developers**: See [HANDOFF.md](HANDOFF.md) for comprehensive system documentation, architecture details, configuration deep-dive, file structure guide, and handoff instructions. This is your one-stop reference for understanding the entire system.
 
 > **🤝 Handoff for Next AI**: See `codex/HANDOFF_NEXT_AI.md` for an operational handoff: environment, ingestion v2, indexes, CI and branch protection, quality gates, and day-2 ops. This is the fastest path to pick up and ship.
