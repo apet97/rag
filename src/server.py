@@ -772,6 +772,10 @@ _last_req: Dict[str, float] = {}
 
 def rate_limit(ip: str, min_interval: float = 0.1) -> None:
     """Rate limit: enforce minimum interval between requests per IP (AXIOM 0)."""
+    # Skip rate limiting for localhost to allow parallel requests from browser UI
+    if ip in ("127.0.0.1", "localhost", "::1"):
+        return
+
     now = time.time()
 
     # Fix #7: Cleanup old entries to prevent memory leak
