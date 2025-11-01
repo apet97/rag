@@ -202,26 +202,28 @@ def test_chat(query: str):
         traceback.print_exc()
         return
 
-    # Build context
+    # Build context chunks for RAG prompt
     print("📚 Step 2: Building context...")
-    context_parts = []
-    sources = []
+    chunks = []
 
     for i, (doc_id, score) in enumerate(results, 1):
         try:
             meta = metadata[doc_id]
             content = meta.get('content', meta.get('text', ''))
-            url = meta.get('url', '')
-            title = meta.get('title', meta.get('h1', ''))
 
             if content:
-                context_parts.append(f"[{i}] {content[:500]}")
-                sources.append(f"[{i}] {title} - {url}")
+                # Build chunk dict with all metadata
+                chunk = {
+                    "text": content,
+                    "score": score,
+                    "rank": i,
+                    **meta  # Include all original metadata (url, title, etc.)
+                }
+                chunks.append(chunk)
         except Exception:
             pass
 
-    context = "\n\n".join(context_parts)
-    print(f"✓ Context built ({len(context)} characters)")
+    print(f"✓ Context built ({len(chunks)} chunks)")
     print()
 
     # Generate answer
@@ -229,9 +231,13 @@ def test_chat(query: str):
     try:
         llm = LLMClient()
 
-        # Build prompt
+        # Build prompt (returns tuple: messages, sources, developer_instructions)
         prompt = RAGPrompt()
-        messages = prompt.build_messages(query, context)
+        messages, sources_list, dev_instructions = prompt.build_messages(
+            question=query,
+            chunks=chunks,
+            namespace="clockify"
+        )
 
         # Call LLM
         answer = llm.chat(messages)
@@ -255,8 +261,11 @@ def test_chat(query: str):
     print()
     print("📖 SOURCES")
     print("=" * 80)
-    for source in sources:
-        print(source)
+    for i, source in enumerate(sources_list, 1):
+        title = source.get('title', source.get('h1', 'N/A'))
+        url = source.get('url', 'N/A')
+        print(f"[{i}] {title}")
+        print(f"    {url}")
     print("=" * 80)
 
 
