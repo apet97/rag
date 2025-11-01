@@ -49,6 +49,14 @@ Environment variables are centralized and validated (see `.env.example`, `src/co
 - Smoke (when staging is reachable):
   - `make runtime_smoke BASE_URL=http://10.127.0.192:7000`
 
+### New Tests Added (v3 incremental)
+- Health endpoint contract tests: `tests/test_health_endpoints.py`
+- Allowlist refill behavior (helper-backed): `tests/test_allowlist_refill.py`
+- H2/H3 chunking behavior and list/code preservation: `tests/test_chunking_clockify.py`
+
+Run a subset locally:
+- `pytest -q tests/test_health_endpoints.py tests/test_allowlist_refill.py tests/test_chunking_clockify.py`
+
 ## 6) Endpoints (FastAPI)
 - `GET /healthz` and `GET /readyz` – report ok, namespace, index_present, index_digest, lexical_weight, chunk_strategy
 - `GET /search?q=...&k=5` – hybrid search over title|h1|path fields
@@ -113,4 +121,3 @@ Environment variables are centralized and validated (see `.env.example`, `src/co
 - Release v3.0.0: see codex/RELEASE_URL.txt
 - CI runs: https://github.com/apet97/rag/actions
 - Docs: README.md, RUNBOOK_v2.md, DEPLOYMENT_PLAN.md, ROLLBACK_PLAN.md
-
