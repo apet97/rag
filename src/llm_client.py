@@ -236,6 +236,28 @@ class LLMClient:
         self.circuit_breaker = get_circuit_breaker(f"llm_{self.model}", breaker_config)
         logger.info(f"LLM circuit breaker initialized: {self.model} (threshold=3, timeout=30s)")
 
+        # Best-effort model autodetection against /api/tags when available.
+        # If the configured model is not present, pick the first tag starting with 'gpt-oss'.
+        try:
+            if not self.mock:
+                resp = _get_http_client().get(self.tags_url)
+                names = []
+                try:
+                    data = resp.json()
+                    if isinstance(data, dict) and 'models' in data:
+                        names = [m.get('name','') for m in data.get('models', []) if isinstance(m, dict)]
+                    elif isinstance(data, list):
+                        names = [m.get('name','') for m in data if isinstance(m, dict)]
+                except Exception:
+                    names = []
+                names = [n for n in names if n]
+                if names and self.model not in names:
+                    pick = next((n for n in names if n.lower().startswith('gpt-oss')), names[0])
+                    logger.info(f"Auto-selected LLM model from tags: {pick}")
+                    self.model = pick
+        except Exception as e:
+            logger.debug(f"LLM model autodetect skipped: {e}")
+
     def _build_url(self, path: str) -> str:
         """Build full URL from base and path using urljoin."""
         base = self.base_url.rstrip("/")

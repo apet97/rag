@@ -8,7 +8,7 @@ import random
 import hmac
 from pathlib import Path
 from uuid import uuid4
-from typing import Optional, Dict, List, Tuple, Any, TypedDict
+from typing import Optional, Dict, List, Tuple, Any
 from contextlib import asynccontextmanager
 
 try:
@@ -36,9 +36,9 @@ from src.query_decomposition import decompose_query, is_multi_intent_query
 from src.models import ResponseMetadata, DecompositionMetadata
 from src.metrics import track_request, get_metrics, get_content_type, track_circuit_breaker
 from src.circuit_breaker import get_all_circuit_breakers
-from src.citation_validator import validate_citations, format_validation_report
+from src.citation_validator import validate_citations
 from src.errors import CircuitOpenError
-from src.index_manager import IndexManager, NamespaceIndex
+from src.index_manager import IndexManager
 from src.performance_tracker import get_performance_tracker
 from src.prompt import RAGPrompt
 from src.semantic_cache import get_semantic_cache
@@ -77,7 +77,7 @@ from src.config import CONFIG
 
 API_TOKEN = os.getenv("API_TOKEN", "change-me")
 HOST = os.getenv("API_HOST", "0.0.0.0")
-PORT = int(os.getenv("API_PORT", "7000"))
+PORT = int(os.getenv("API_PORT", "7001"))
 RETRIEVAL_K = int(os.getenv("RETRIEVAL_K", "20"))  # Increased from 5 to 20 for better recall
 
 # CI support: Allow RAG_INDEX_ROOT env var to override default index location (for test fixtures)
@@ -1544,7 +1544,7 @@ def chat(
             })
             with open('logs/retrieval_metrics.log', 'a', encoding='utf-8') as mf:
                 mf.write(metrics_line + "\n")
-        except Exception as _:
+        except Exception:
             pass
 
         return ChatResponse(
