@@ -5,7 +5,6 @@ import time
 import json
 import random
 import re
-import threading
 from typing import Optional, Dict, List, Any
 from urllib.parse import urljoin, urlparse, parse_qs
 
