@@ -3,8 +3,35 @@
 
 Local, production-ready retrieval-augmented generation system for Clockify Help + LangChain docs. Zero cloud services, full control, state-of-the-art retrieval.
 
+## 🚀 Production Quick Start (Minimal Commands)
+
+Get a production-ready RAG server running in 4 commands:
+
+```bash
+# 1) Clone and set up
+git clone https://github.com/apet97/rag && cd rag
+python3 -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt -c constraints.txt
+cp -n .env.example .env
+
+# 2) Build index and run offline gates
+make ingest_v2
+make offline_eval
+
+# 3) Serve API locally
+uvicorn src.server:app --host 0.0.0.0 --port 7001
+```
+
+**Built-in UI**: Open browser to http://localhost:7001
+
+**VPN LLM**: The system connects to internal `http://10.127.0.192:11434` (oss20b model) by default. No API key needed.
+
+**Offline Testing**: Set `MOCK_LLM=true` to run without VPN access.
+
 ## Quick Links
 
+- **VPN smoke test**: See [VPN_SMOKE.md](VPN_SMOKE.md) for endpoint health checks
+- **Operations**: See [codex/RUNBOOK_v2.md](codex/RUNBOOK_v2.md) for deployment and troubleshooting
 - Run on VPN (one command): `./scripts/run_local.sh`
 - Run on VPN with real embeddings (MiniLM, 384): `./scripts/run_local_real.sh`
 - Offline runbook: `codex/RUN_ON_COMPANY_LAPTOP.md`

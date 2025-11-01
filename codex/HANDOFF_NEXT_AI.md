@@ -8,6 +8,27 @@ This document gives the next AI/tool everything needed to understand, run, and i
 - Release URL: see codex/RELEASE_URL.txt
 - Namespace: `clockify`
 
+## 0) Status Snapshot (Nov 1, 2025)
+- Remote main (protected): up to 3195cee
+- Latest changes prepared in PR: https://github.com/apet97/rag/pull/21
+  - CORS defaults include https://ai.coingdevelopment.com and localhost:7001 (src/server.py:130)
+  - Dev‑mode token ergonomics (accept any non‑empty token when API_TOKEN=change‑me) (src/server.py:748)
+  - Prefer Clockify namespaces by default when auto‑deriving (src/server.py:88)
+  - UI auto‑targets full host:7001 when UI runs on a different port (public/js/api.js:1, public/js/main-qwen.js:1)
+  - Bootstrap fallback strips lxml/readability‑lxml/trafilatura on macOS/Py3.13 (scripts/run_local.sh:1)
+  - Added policy files: codex/ALLOWLIST.txt, codex/DENYLIST.txt, codex/canonical_params_ignore.txt
+- CI status on PR #21:
+  - Static Analysis (strict): success
+  - Static Analysis (strict flake8): success
+  - RAG CI Pipeline: success
+  - Large files check: success
+  - RAG Corpus CI: success (latest run)
+- Blocker to merge: 1 approving review required by branch protection
+
+Merge steps (gh):
+- gh pr review 21 --approve
+- gh pr merge 21 --squash --delete-branch
+
 ## 1) What This Is
 A production‑ready Retrieval‑Augmented Generation (RAG) system for Clockify help content. It provides strict allowlist enforcement, enriched corpus ingestion (v2), hybrid retrieval (BM25+vector), citations, and quality gates.
 
@@ -46,6 +67,7 @@ Environment variables are centralized and validated (see `.env.example`, `src/co
   - `make offline_eval`
 - Serve API:
   - `uvicorn src.server:app --host 0.0.0.0 --port 7001`
+  - Built‑in UI is served at `/` (http://localhost:7001)
 - Smoke (when staging is reachable):
   - `make runtime_smoke BASE_URL=http://10.127.0.192:7000`
 
@@ -64,6 +86,10 @@ Run a subset locally:
 - `GET /search?q=...&k=5` – hybrid search over title|h1|path fields
 - `POST /chat` – full RAG with citations; allowlist guard enforced
 
+Notes on auth and CORS:
+- Dev mode: when `ENV!=prod` and `API_TOKEN=change-me`, any non‑empty `x-api-token` is accepted.
+- CORS defaults include: `http://localhost:8080`, `http://localhost:7001`, and `https://ai.coingdevelopment.com` (see src/server.py:130). Override with `CORS_ALLOWED_ORIGINS` as needed.
+
 ## 7) Artifacts (codex/)
 - Corpus: `CRAWLED_LINKS_enriched.json`, `ALLOWLIST.txt`, `DENYLIST.txt`
 - Ingestion: `INGEST_STATS_v2.md`, `INGEST_FAILED_v2.txt`
@@ -76,6 +102,11 @@ Run a subset locally:
 - Required checks: “RAG Corpus CI”, “Large files check”
 - RAG Corpus CI matrix 3.10/3.11; runs black/isort, flake8 (src‑scoped), mypy subset, and tests/offline eval
 - PRs must be merged (no direct push to main); admins enforced
+
+PR operations (gh):
+- List runs for branch: `gh run list --limit 10 | rg <branch>`
+- Rerun failing run: `gh run rerun <run-id>`
+- Watch checks: `gh run watch --exit-status --interval 10`
 
 ## 9) Ingestion v2 + Chunking
 - `tools/ingest_v2.py` reads `ENRICHED_LINKS_JSON`, applies allow/deny, chunks content
@@ -106,6 +137,7 @@ Run a subset locally:
 - Large indexes accidentally committed → keep `index/` ignored (see `.gitignore`)
 - Non‑allowlisted citations → verify allowlist regex and runtime guard
 - EMBEDDING_DIM mismatch → fails fast at import in `src/config.py`
+- macOS Python 3.13 + lxml builds → use `./scripts/run_local.sh` (fallback strips lxml/readability/trafilatura). For real embeddings without internet, pre‑seed the HuggingFace cache or run `./scripts/run_local_real.sh` on a connected host once.
 
 ## 14) How To Extend
 - Add new integrations/docs: update allowlist rules and ingest; run `make ingest_v2`
@@ -118,6 +150,7 @@ Run a subset locally:
 - [ ] `OFFLINE_EVAL.md` shows Hit@5 within gates
 - [ ] Release artifacts updated (`CORPUS_FREEZE_*`, `INDEX_DIGEST.txt`)
 - [ ] Branch protection intact; CI green on PRs
+  - For current PR #21, approve + merge when all greens present.
 
 ## 16) Links
 - Release v3.0.0: see codex/RELEASE_URL.txt
