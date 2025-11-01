@@ -17,7 +17,9 @@ def build_conversation_prompt(
     retrieved_context: str,
     sources: List[Dict[str, Any]],
     namespace: str = "clockify",
-    max_history_turns: int = 3
+    max_history_turns: int = 3,
+    intent: Optional[str] = None,
+    keywords: Optional[List[str]] = None
 ) -> Tuple[List[Dict[str, str]], str]:
     """
     Build multi-turn conversation messages for LLM.
@@ -75,12 +77,14 @@ def build_conversation_prompt(
         f"(max={max_history_turns})"
     )
 
-    # Build current turn prompt with retrieved context
+    # Build current turn prompt with retrieved context (Phase 2: include intent/keywords)
     current_turn_content = _build_current_turn_prompt(
         question=current_question,
         context=retrieved_context,
         sources=sources,
-        is_followup=len(history_to_include) > 0
+        is_followup=len(history_to_include) > 0,
+        intent=intent,
+        keywords=keywords
     )
 
     messages.append({
@@ -110,16 +114,22 @@ def _build_system_prompt(namespace: str) -> str:
     """
     return f"""You are a helpful assistant for {namespace} documentation.
 
+You are provided with COMPLETE ARTICLES (not excerpts) from the documentation.
+Read the full context carefully before answering.
+
 Your role:
-1. Answer questions based on the provided documentation context
+1. Answer questions based on the FULL article text provided
 2. If this is a follow-up question, refer to the previous conversation
-3. Use numbered citations [1], [2] to reference sources
-4. If the documentation doesn't contain enough information, say so clearly
-5. Maintain a helpful, professional tone
+3. Use numbered citations [1], [2] to reference articles
+4. Consider the detected intent and focus keywords
+5. If the documentation doesn't contain enough information, say so clearly
+6. Maintain a helpful, professional tone
 
 Remember:
-- Base answers on provided documentation only
+- Base answers on provided article text only (complete articles, not truncated)
 - Use citations for all factual claims
+- Pay attention to the query intent (how-to, comparison, factual, etc.)
+- Focus on the extracted keywords when relevant
 - If context is missing, don't make assumptions
 - For follow-ups, reference previous answers when relevant
 """
@@ -129,16 +139,22 @@ def _build_current_turn_prompt(
     question: str,
     context: str,
     sources: List[Dict[str, Any]],
-    is_followup: bool = False
+    is_followup: bool = False,
+    intent: Optional[str] = None,
+    keywords: Optional[List[str]] = None
 ) -> str:
     """
     Build prompt for the current conversation turn.
 
+    Phase 2: Enhanced with intent and keyword guidance.
+
     Args:
         question: User's current question
-        context: Retrieved documentation context
+        context: Retrieved documentation context (full articles)
         sources: List of source documents
         is_followup: Whether this is a follow-up question
+        intent: Detected query intent (how_to, comparison, etc.)
+        keywords: Extracted keywords to focus on
 
     Returns:
         Formatted prompt string
@@ -146,29 +162,41 @@ def _build_current_turn_prompt(
     # Build sources list for citations
     sources_text = _format_sources(sources)
 
+    # Build intent/keyword guidance (Phase 2)
+    guidance = ""
+    if intent or keywords:
+        guidance_parts = []
+        if intent:
+            guidance_parts.append(f"Intent: {intent}")
+        if keywords:
+            keywords_str = ", ".join(keywords[:5])  # Top 5 keywords
+            guidance_parts.append(f"Focus keywords: {keywords_str}")
+
+        guidance = "\n" + " | ".join(guidance_parts) + "\n"
+
     if is_followup:
         prompt = f"""This is a follow-up question. Please consider the previous conversation when answering.
-
+{guidance}
 Question: {question}
 
-Relevant documentation:
+Complete article text (full documentation):
 {context}
 
 Sources:
 {sources_text}
 
-Answer the question based on the documentation, using [1], [2], etc. citations.
+Answer the question based on the complete article text, using [1], [2], etc. citations.
 If this question refers to the previous answer, incorporate that context naturally."""
     else:
         prompt = f"""Question: {question}
-
-Relevant documentation:
+{guidance}
+Complete article text (full documentation):
 {context}
 
 Sources:
 {sources_text}
 
-Answer the question based on the documentation, using [1], [2], etc. citations."""
+Answer the question based on the complete article text, using [1], [2], etc. citations."""
 
     return prompt
 

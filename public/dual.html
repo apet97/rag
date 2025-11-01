@@ -253,6 +253,65 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        /* Phase 2: Intent and Keywords Display */
+        .answer-metadata {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+            font-size: 13px;
+        }
+
+        .intent-badge {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 16px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .keywords-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            align-items: center;
+            color: #4a5568;
+        }
+
+        .keyword-chip {
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .articles-info {
+            color: #718096;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .ticket-badge {
+            background: #fff3cd;
+            color: #856404;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            border: 1px solid #ffeaa7;
+        }
     </style>
 </head>
 <body>
@@ -486,6 +545,57 @@
                 `;
             }
 
+            // Phase 2: Add intent and keywords metadata
+            let metadataHTML = '';
+            if (meta && (meta.intent || meta.keywords)) {
+                const intentIcon = {
+                    'how_to': '📝',
+                    'comparison': '⚖️',
+                    'factual': '📊',
+                    'definition': '📖',
+                    'general': '💬'
+                };
+
+                const intentLabel = meta.intent ? meta.intent.replace('_', ' ').toUpperCase() : '';
+                const icon = intentIcon[meta.intent] || '💬';
+
+                let keywordsHTML = '';
+                if (meta.keywords && meta.keywords.length > 0) {
+                    const chips = meta.keywords.slice(0, 5).map(kw =>
+                        `<span class="keyword-chip">${kw}</span>`
+                    ).join('');
+                    keywordsHTML = `
+                        <div class="keywords-section">
+                            <span>🔑 Keywords:</span>
+                            ${chips}
+                        </div>
+                    `;
+                }
+
+                let articleInfo = '';
+                if (meta.article_count) {
+                    articleInfo = `
+                        <div class="articles-info">
+                            📚 ${meta.article_count} article${meta.article_count > 1 ? 's' : ''} analyzed
+                        </div>
+                    `;
+                }
+
+                let ticketBadge = '';
+                if (meta.is_ticket) {
+                    ticketBadge = '<span class="ticket-badge">🎫 Support Ticket</span>';
+                }
+
+                metadataHTML = `
+                    <div class="answer-metadata">
+                        <div class="intent-badge">${icon} ${intentLabel}</div>
+                        ${keywordsHTML}
+                        ${articleInfo}
+                        ${ticketBadge}
+                    </div>
+                `;
+            }
+
             // Add sources
             let sourcesHTML = '';
             if (sources && sources.length > 0) {
@@ -504,6 +614,7 @@
             panel.innerHTML = `
                 <div class="answer-content">
                     ${sessionInfoHTML}
+                    ${metadataHTML}
                     ${formattedAnswer}
                     ${sourcesHTML}
                 </div>

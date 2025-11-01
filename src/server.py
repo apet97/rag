@@ -44,6 +44,10 @@ from src.prompt import RAGPrompt
 from src.semantic_cache import get_semantic_cache
 from src.session_manager import SessionManager
 from src.conversation_context import build_conversation_prompt
+# Phase 2 imports: full-article context + intent analysis
+from src.ticket_parser import is_ticket, parse_ticket, format_ticket_for_query
+from src.intent_analyzer import analyze_intent, get_adaptive_article_count
+from src.article_context import build_full_article_context, format_articles_for_display
 
 # Allow/Deny patterns for runtime enforcement
 _ALLOWLIST_PATH = str(CFG.ALLOWLIST_PATH)
@@ -1680,8 +1684,33 @@ async def chat_with_session(
     start_time = time.time()
 
     try:
-        # Retrieval phase (same as regular /chat)
-        logger.debug(f"Session {session_id} turn {len(session['conversation']) + 1}: question='{req.question}'")
+        # Phase 2: Ticket parsing and intent analysis
+        ticket_data = None
+        query_for_retrieval = req.question
+
+        # Check if this is a support ticket
+        if os.getenv("ENABLE_TICKET_PARSING", "true").lower() == "true":
+            if is_ticket(req.question):
+                ticket_data = parse_ticket(req.question)
+                if ticket_data and ticket_data.confidence >= 0.5:
+                    query_for_retrieval = format_ticket_for_query(ticket_data)
+                    logger.info(
+                        f"Parsed as support ticket (confidence={ticket_data.confidence:.2f}): "
+                        f"{len(ticket_data.steps_to_reproduce)} steps, {len(ticket_data.error_messages)} errors"
+                    )
+
+        # Analyze intent and extract keywords
+        intent_analysis = analyze_intent(query_for_retrieval, ticket_data)
+        logger.info(
+            f"Intent analysis: intent={intent_analysis.intent}, "
+            f"keywords={intent_analysis.keywords[:5]}, confidence={intent_analysis.confidence:.2f}"
+        )
+
+        # Retrieval phase
+        logger.debug(
+            f"Session {session_id} turn {len(session['conversation']) + 1}: "
+            f"question='{req.question[:100]}...' (intent={intent_analysis.intent})"
+        )
 
         # Expand query
         from src.query_expand import expand_structured
@@ -1710,28 +1739,46 @@ async def chat_with_session(
         )
         retrieval_ms = int((time.time() - retrieval_start) * 1000)
 
-        # Build context from results
-        sources = []
-        context_parts = []
+        # Phase 2: Build FULL-article context (not truncated chunks)
+        use_full_articles = os.getenv("FULL_ARTICLE_CONTEXT", "true").lower() == "true"
 
-        for i, result in enumerate(combined_results[:CFG.CONFIG.MAX_CONTEXT_CHUNKS], 1):
-            content_text = result.get("text", result.get("content", ""))
-            if content_text:
-                # Truncate to avoid context explosion
-                truncated = content_text[:CFG.CONFIG.CONTEXT_CHAR_LIMIT]
-                context_parts.append(f"[{i}] {truncated}")
+        if use_full_articles:
+            # Build full-article context with adaptive count
+            article_context = build_full_article_context(
+                search_results=combined_results,
+                intent=intent_analysis.intent,
+                adaptive_count=True
+            )
 
-                sources.append({
-                    "url": result.get("url", ""),
-                    "title": result.get("title", result.get("h1", "Untitled")),
-                    "text": truncated,
-                    "chunk_id": result.get("chunk_id", ""),
-                    "score": result.get("final_score", 0.0)
-                })
+            retrieved_context = article_context.full_text
+            sources = format_articles_for_display(article_context.articles)
 
-        retrieved_context = "\n\n".join(context_parts)
+            logger.info(
+                f"Full-article context: {article_context.count} articles, "
+                f"{article_context.total_chars:,} chars"
+            )
+        else:
+            # Fallback: Original chunk-based context (backward compatibility)
+            sources = []
+            context_parts = []
 
-        # Build multi-turn prompt with conversation history
+            for i, result in enumerate(combined_results[:CFG.CONFIG.MAX_CONTEXT_CHUNKS], 1):
+                content_text = result.get("text", result.get("content", ""))
+                if content_text:
+                    truncated = content_text[:CFG.CONFIG.CONTEXT_CHAR_LIMIT]
+                    context_parts.append(f"[{i}] {truncated}")
+
+                    sources.append({
+                        "url": result.get("url", ""),
+                        "title": result.get("title", result.get("h1", "Untitled")),
+                        "text": truncated,
+                        "chunk_id": result.get("chunk_id", ""),
+                        "score": result.get("final_score", 0.0)
+                    })
+
+            retrieved_context = "\n\n".join(context_parts)
+
+        # Build multi-turn prompt with conversation history (Phase 2: pass intent/keywords)
         from src.conversation_context import build_conversation_prompt
         messages, developer_instructions = build_conversation_prompt(
             current_question=req.question,
@@ -1739,7 +1786,9 @@ async def chat_with_session(
             retrieved_context=retrieved_context,
             sources=sources,
             namespace=namespace,
-            max_history_turns=3
+            max_history_turns=3,
+            intent=intent_analysis.intent,
+            keywords=intent_analysis.keywords
         )
 
         logger.debug(f"Built conversation prompt with {len(session['conversation'])} previous turns")
@@ -1768,13 +1817,18 @@ async def chat_with_session(
         from src.citation_validator import validate_citations
         citation_validation = validate_citations(answer, len(sources))
 
-        # Store turn in session
+        # Store turn in session (Phase 2: include intent + keywords)
         session_manager.add_turn(session_id, {
             "user_question": req.question,
             "llm_answer": answer,
             "retrieved_urls": [s["url"] for s in sources],
             "answerability_score": answerability_score,
             "is_answerable": is_answerable,
+            # Phase 2 metadata
+            "keywords": intent_analysis.keywords,
+            "intent": intent_analysis.intent,
+            "intent_confidence": intent_analysis.confidence,
+            "is_ticket": ticket_data is not None,
         })
 
         total_ms = int((time.time() - start_time) * 1000)
@@ -1794,12 +1848,23 @@ async def chat_with_session(
                 "total": total_ms,
             },
             meta={
+                # Session metadata
                 "session_id": session_id,
                 "turn": len(session["conversation"]),
                 "has_conversation_history": len(session["conversation"]) > 1,
+                # Quality metadata
                 "answerability_score": answerability_score,
                 "is_answerable": is_answerable,
                 "citations": citation_validation.total_citations,
+                # Phase 2: Intent + Keywords metadata
+                "keywords": intent_analysis.keywords,
+                "intent": intent_analysis.intent,
+                "intent_confidence": intent_analysis.confidence,
+                "query_type": intent_analysis.query_type,
+                "is_ticket": ticket_data is not None,
+                # Article context stats
+                "article_count": len(sources) if use_full_articles else len(sources),
+                "context_chars": len(retrieved_context),
             },
         )
 
