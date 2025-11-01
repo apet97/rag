@@ -28,6 +28,26 @@ uvicorn src.server:app --host 0.0.0.0 --port 7001
 
 **Offline Testing**: Set `MOCK_LLM=true` to run without VPN access.
 
+## 📚 Documentation
+
+**Getting Started:**
+- [Quick Start](#-production-quick-start-minimal-commands) - Get running in 3 commands
+- [Deployment Guide](DEPLOY.md) - Production setup
+
+**Tuning & Configuration:** (⭐ = Most commonly needed)
+- ⭐ [Answerability Tuning](docs/ANSWERABILITY_TUNING.md) - Fix "I don't know" responses
+- ⭐ [Retrieval Tuning](docs/RETRIEVAL_TUNING_GUIDE.md) - Optimize search quality
+- ⭐ [Add Documents](docs/ADD_NEW_DOCUMENTS.md) - Expand your knowledge base
+- [All Documentation](docs/README.md) - Complete guide index
+
+**Operations:**
+- [Runbook](codex/RUNBOOK_v2.md) - Production operations & troubleshooting
+- [VPN Setup](VPN_SMOKE.md) - Internal LLM access
+- [Improvement Plan](codex/IMPROVEMENT_PLAN.md) - Roadmap
+
+**Architecture:**
+- [Handoff Document](codex/HANDOFF_NEXT_AI.md) - Technical architecture & design
+
 ## Quick Links
 
 - **VPN smoke test**: See [VPN_SMOKE.md](VPN_SMOKE.md) for endpoint health checks
