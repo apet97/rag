@@ -4,7 +4,21 @@
 
 class RAGApi {
     constructor(baseUrl = '') {
-        this.baseUrl = baseUrl || window.location.origin;
+        // Prefer explicit baseUrl; otherwise, derive sensible default:
+        // - If UI is served by API (port 7001), use window.location.origin
+        // - If UI is standalone (e.g., 8080), target API on same host at :7001
+        if (baseUrl) {
+            this.baseUrl = baseUrl;
+        } else if (window.__API_BASE__) {
+            this.baseUrl = window.__API_BASE__;
+        } else {
+            const loc = window.location;
+            if (loc.port && loc.port !== '7001') {
+                this.baseUrl = `${loc.protocol}//${loc.hostname}:7001`;
+            } else {
+                this.baseUrl = loc.origin;
+            }
+        }
     }
 
     async search(query, namespace = 'clockify', k = 5) {
@@ -15,7 +29,7 @@ class RAGApi {
                 k: k
             });
             const response = await fetch(`${this.baseUrl}/search?${params}`, {
-                headers: { 'x-api-token': 'change-me' }
+                headers: { 'x-api-token': (localStorage.getItem('api_token') || 'change-me') }
             });
             if (!response.ok) throw new Error(`HTTP ${response.status}`);
             return await response.json();
@@ -31,7 +45,7 @@ class RAGApi {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'x-api-token': 'change-me'
+                    'x-api-token': (localStorage.getItem('api_token') || 'change-me')
                 },
                 body: JSON.stringify({
                     question: question,

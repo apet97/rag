@@ -1,0 +1,4 @@
+^https?://(www\.)?clockify\.me/help(/|$)
+^https?://(www\.)?clockify\.me/integrations(/|$)
+^https?://(www\.)?clockify\.me/developers(/|$)
+^https?://(www\.)?clockify\.me/blog/(guide|how-to)(/|$)

@@ -1,0 +1,4 @@
+^https?://docs\.langchain\.com(/|$)
+^https?://(www\.)?app\.clockify\.me(/|$)
+^https?://(www\.)?clockify\.me/help/contact/message-sent$
+^https?://(www\.)?clockify\.me/wp-admin(/|$)

@@ -23,8 +23,24 @@ if ! pip install -r requirements.txt -c constraints.txt >/dev/null; then
   fi
   # Install the rest excluding faiss/numpy to avoid resolver downgrades
   TMP_REQS=$(mktemp)
-  grep -v -E '^(faiss-cpu|numpy)=' requirements.txt > "$TMP_REQS"
-  pip install -r "$TMP_REQS" -c constraints.txt >/dev/null || pip install -r "$TMP_REQS" >/dev/null
+  # Strip packages that frequently fail to build on macOS/Python 3.13 (not needed to serve API)
+  # Keep this list minimal and focused on runtime-only path
+  grep -v -E '^(faiss-cpu|numpy)=' requirements.txt | \
+    grep -v -E '^(lxml|readability-lxml|trafilatura)=' > "$TMP_REQS"
+  if ! pip install -r "$TMP_REQS" -c constraints.txt >/dev/null; then
+    echo "Secondary install failed; performing minimal runtime install (no lxml/extras)..."
+    # Minimal runtime deps to serve API + FAISS search (avoid lxml builds on newer Pythons)
+    pip install -q \
+      'fastapi==0.110.0' \
+      'uvicorn==0.27.1' \
+      'httpx==0.27.0' \
+      'orjson==3.9.10' \
+      'loguru==0.7.3' \
+      'python-dotenv==1.0.1' \
+      'rank-bm25==0.2.2' \
+      'prometheus-client==0.19.0' \
+      >/dev/null || true
+  fi
 fi
 
 echo "[2/5] Preparing logs directory (structured JSONL at logs/retrieval_metrics.log)..."

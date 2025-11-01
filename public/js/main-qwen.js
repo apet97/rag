@@ -5,7 +5,14 @@
 
 // ===== API Configuration =====
 const API_TOKEN = localStorage.getItem('api_token') || 'change-me';
-const API_BASE = window.location.origin;
+let API_BASE = (function(){
+    if (window.__API_BASE__) return window.__API_BASE__;
+    const loc = window.location;
+    if (loc.port && loc.port !== '7001') {
+        return `${loc.protocol}//${loc.hostname}:7001`;
+    }
+    return loc.origin;
+})();
 
 // ===== DOM Elements =====
 const chatInput = document.getElementById('chatInput');

@@ -1,0 +1,5 @@
+utm_source
+utm_medium
+utm_campaign
+gclid
+fbclid

@@ -76,6 +76,7 @@ def _is_allowed(url: str) -> bool:
 from src.config import CONFIG
 
 API_TOKEN = os.getenv("API_TOKEN", "change-me")
+API_TOKENS_EXTRA = [t.strip() for t in os.getenv("API_TOKENS", "").split(",") if t.strip()]
 HOST = os.getenv("API_HOST", "0.0.0.0")
 PORT = int(os.getenv("API_PORT", "7001"))
 RETRIEVAL_K = int(os.getenv("RETRIEVAL_K", "20"))  # Increased from 5 to 20 for better recall
@@ -91,6 +92,8 @@ def _derive_namespaces(index_root: Path) -> List[str]:
     If NAMESPACES env var is not set, scans INDEX_ROOT for subdirectories
     with meta.json files and uses those as namespaces. This prevents CI
     failures when only a subset of namespaces are available in test fixtures.
+    Prefer Clockify-only namespaces by default (domain policy). If none found,
+    return all discovered namespaces.
 
     Args:
         index_root: Root path to search for namespace directories
@@ -103,6 +106,10 @@ def _derive_namespaces(index_root: Path) -> List[str]:
         for p in index_root.iterdir():
             if p.is_dir() and (p / "meta.json").exists():
                 candidates.append(p.name)
+    # Prefer 'clockify*' namespaces by default
+    clk = sorted([c for c in candidates if c.lower().startswith("clockify")])
+    if clk:
+        return clk
     return sorted(candidates)
 
 
@@ -121,12 +128,19 @@ INDEX_MODE = os.getenv("INDEX_MODE", "single")
 # Default to localhost:8080 and 127.0.0.1:8080 for local development
 # Production deployments should set CORS_ALLOWED_ORIGINS env var to explicit domains
 _default_cors_origins = [
+    # Local dev UI and API
     "http://localhost:8080",
     "http://127.0.0.1:8080",
+    "http://localhost:7001",
+    "http://127.0.0.1:7001",
+    # VPN infra convenience
     "http://10.127.0.192:8080",
     "http://10.127.0.192:7001",
+    # Company UI domains
+    "http://ai.coingdevelopment.com",
     "http://ai.coingdevelopment.com:8080",
     "http://ai.coingdevelopment.com:7001",
+    "https://ai.coingdevelopment.com",
 ]
 _cors_env = os.getenv("CORS_ALLOWED_ORIGINS", "").strip()
 if _cors_env:
@@ -741,10 +755,14 @@ def require_token(token: Optional[str]):
     if not token:
         raise HTTPException(status_code=401, detail="unauthorized")
 
-    # Always validate token using constant-time comparison, regardless of environment
-    # In dev: token must equal "change-me"
-    # In prod: token must equal configured API_TOKEN
-    if not hmac.compare_digest(token, API_TOKEN):
+    # Production: validate token strictly
+    ENV_MODE = os.getenv("ENV", "dev").strip().lower()
+    if ENV_MODE != "prod" and API_TOKEN == "change-me":
+        # Dev ergonomics: accept any non-empty token when using default dev token
+        return
+    # Accept primary or any from API_TOKENS
+    valid = hmac.compare_digest(token, API_TOKEN) or any(hmac.compare_digest(token, t) for t in API_TOKENS_EXTRA)
+    if not valid:
         logger.warning("Invalid token attempt")
         raise HTTPException(status_code=401, detail="unauthorized")
 
@@ -1209,7 +1227,7 @@ def search(
             decomposition=decomp_meta,
         )
 
-        response = {
+        response: Dict[str, Any] = {
             "success": True,
             "query": q,
             "results": results,
