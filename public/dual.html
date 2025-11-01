@@ -336,7 +336,7 @@
                             'Content-Type': 'application/json',
                             'x-api-token': API_TOKEN
                         },
-                        body: JSON.stringify({ query, k: 5 })
+                        body: JSON.stringify({ question: query, k: 5 })
                     }).then(r => r.json())
                 ]);
 

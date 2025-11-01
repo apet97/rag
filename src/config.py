@@ -38,7 +38,7 @@ def _parse_float(name: str, default: float) -> float:
         return default
 
 
-SEARCH_LEXICAL_WEIGHT: float = _parse_float("SEARCH_LEXICAL_WEIGHT", 0.50)
+SEARCH_LEXICAL_WEIGHT: float = _parse_float("SEARCH_LEXICAL_WEIGHT", 0.35)
 if not (0.0 <= SEARCH_LEXICAL_WEIGHT <= 1.0):
     raise RuntimeError("SEARCH_LEXICAL_WEIGHT must be in [0,1].")
 

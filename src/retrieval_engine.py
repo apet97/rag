@@ -533,6 +533,13 @@ class HybridSearchStrategy(BaseRetrievalStrategy):
         if not results or len(results) < 2:
             return results
 
+        # Performance optimization: Skip expensive MMR for large result sets
+        # Greedy MMR is O(N²) and becomes prohibitive for N > 20
+        if len(results) > 20:
+            from loguru import logger
+            logger.debug(f"Skipping MMR diversity filter for {len(results)} results (threshold: 20)")
+            return results[:self.config.k_final] if self.config.k_final else results
+
         lambda_param = MMR_LAMBDA  # Gold-standard: balances relevance and diversity
         selected_indices = []
         mmr_scores = {}
