@@ -353,6 +353,8 @@ async def log_requests(request: Request, call_next):
         f"status={response.status_code} duration={duration:.3f}s"
     )
 
+    return response
+
 def _filter_and_refill_for_test(hits: List[Dict[str, Any]], candidates: List[Dict[str, Any]], max_context: int) -> List[Dict[str, Any]]:
     """Testing helper: enforce allowlist/denylist on hits and refill from candidates.
 

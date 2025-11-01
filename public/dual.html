@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clockify Help Assistant</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            background: #f5f7fa;
+            color: #2c3e50;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            opacity: 0.95;
+            font-size: 16px;
+        }
+
+        .search-box {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .input-group {
+            display: flex;
+            gap: 12px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 14px 18px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 14px 32px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            background: #cbd5e0;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .panels {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .panel {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            min-height: 500px;
+        }
+
+        .panel h2 {
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: #667eea;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .article-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .article-card {
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 15px;
+            transition: all 0.3s;
+        }
+
+        .article-card:hover {
+            border-color: #667eea;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.15);
+        }
+
+        .article-title {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 6px;
+            font-size: 15px;
+        }
+
+        .article-url {
+            color: #667eea;
+            text-decoration: none;
+            font-size: 13px;
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        .article-url:hover {
+            text-decoration: underline;
+        }
+
+        .article-score {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .answer-content {
+            line-height: 1.8;
+            color: #34495e;
+        }
+
+        .answer-content h3 {
+            color: #2c3e50;
+            margin: 20px 0 10px 0;
+            font-size: 18px;
+        }
+
+        .answer-content ol, .answer-content ul {
+            margin-left: 25px;
+            margin-bottom: 15px;
+        }
+
+        .answer-content li {
+            margin-bottom: 8px;
+        }
+
+        .answer-content p {
+            margin-bottom: 15px;
+        }
+
+        .sources-section {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #e2e8f0;
+        }
+
+        .sources-section h3 {
+            font-size: 16px;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .source-link {
+            display: block;
+            color: #667eea;
+            text-decoration: none;
+            padding: 6px 0;
+            font-size: 14px;
+        }
+
+        .source-link:hover {
+            text-decoration: underline;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #718096;
+        }
+
+        .spinner {
+            border: 3px solid #e2e8f0;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #718096;
+        }
+
+        .empty-state-icon {
+            font-size: 60px;
+            margin-bottom: 15px;
+        }
+
+        @media (max-width: 968px) {
+            .panels {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔍 Clockify Help Assistant</h1>
+            <p class="subtitle">Get instant answers from our knowledge base</p>
+        </header>
+
+        <div class="search-box">
+            <div class="input-group">
+                <input
+                    type="text"
+                    id="queryInput"
+                    placeholder="Ask anything about Clockify... (e.g., How do I create a project?)"
+                    onkeypress="if(event.key==='Enter') askQuestion()"
+                >
+                <button onclick="askQuestion()" id="askBtn">Ask</button>
+            </div>
+        </div>
+
+        <div class="panels">
+            <!-- Left Panel: Article List -->
+            <div class="panel">
+                <h2>📚 Related Articles</h2>
+                <div id="articlesPanel">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📄</div>
+                        <p>Enter a question to see related articles</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel: AI Answer -->
+            <div class="panel">
+                <h2>💬 AI Answer</h2>
+                <div id="answerPanel">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🤖</div>
+                        <p>Enter a question to get an AI-powered answer</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_TOKEN = 'change-me'; // Will use .env value
+
+        async function askQuestion() {
+            const query = document.getElementById('queryInput').value.trim();
+            if (!query) return;
+
+            const askBtn = document.getElementById('askBtn');
+            askBtn.disabled = true;
+            askBtn.textContent = 'Searching...';
+
+            // Show loading states
+            document.getElementById('articlesPanel').innerHTML = `
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>Searching knowledge base...</p>
+                </div>
+            `;
+            document.getElementById('answerPanel').innerHTML = `
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>Generating answer...</p>
+                </div>
+            `;
+
+            try {
+                // Fetch search results and chat response in parallel
+                const [searchData, chatData] = await Promise.all([
+                    fetch(`/search?q=${encodeURIComponent(query)}&k=5`, {
+                        headers: { 'x-api-token': API_TOKEN }
+                    }).then(r => r.json()),
+                    fetch('/chat', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'x-api-token': API_TOKEN
+                        },
+                        body: JSON.stringify({ query, k: 5 })
+                    }).then(r => r.json())
+                ]);
+
+                // Display articles
+                displayArticles(searchData.results || []);
+
+                // Display answer
+                displayAnswer(chatData.answer || '', chatData.sources || []);
+
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('articlesPanel').innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">❌</div>
+                        <p>Error loading articles. Please try again.</p>
+                    </div>
+                `;
+                document.getElementById('answerPanel').innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">❌</div>
+                        <p>Error generating answer. Please try again.</p>
+                    </div>
+                `;
+            } finally {
+                askBtn.disabled = false;
+                askBtn.textContent = 'Ask';
+            }
+        }
+
+        function displayArticles(results) {
+            const panel = document.getElementById('articlesPanel');
+
+            if (!results || results.length === 0) {
+                panel.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🔍</div>
+                        <p>No articles found</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const articlesHTML = results.map((result, index) => `
+                <div class="article-card">
+                    <div class="article-title">${result.title || 'Untitled'}</div>
+                    <a href="${result.url}" class="article-url" target="_blank">${result.url}</a>
+                    <span class="article-score">Score: ${(result.score || 0).toFixed(3)}</span>
+                </div>
+            `).join('');
+
+            panel.innerHTML = `<div class="article-list">${articlesHTML}</div>`;
+        }
+
+        function displayAnswer(answer, sources) {
+            const panel = document.getElementById('answerPanel');
+
+            if (!answer) {
+                panel.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">💭</div>
+                        <p>No answer generated</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Format answer (simple markdown-like formatting)
+            let formattedAnswer = answer
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\n\n/g, '</p><p>')
+                .replace(/\n/g, '<br>');
+
+            formattedAnswer = `<p>${formattedAnswer}</p>`;
+
+            // Add sources
+            let sourcesHTML = '';
+            if (sources && sources.length > 0) {
+                sourcesHTML = `
+                    <div class="sources-section">
+                        <h3>📖 Sources</h3>
+                        ${sources.map((source, i) => `
+                            <a href="${source.url}" class="source-link" target="_blank">
+                                [${i + 1}] ${source.title || source.url}
+                            </a>
+                        `).join('')}
+                    </div>
+                `;
+            }
+
+            panel.innerHTML = `
+                <div class="answer-content">
+                    ${formattedAnswer}
+                    ${sourcesHTML}
+                </div>
+            `;
+        }
+
+        // Focus input on load
+        document.getElementById('queryInput').focus();
+    </script>
+</body>
+</html>
